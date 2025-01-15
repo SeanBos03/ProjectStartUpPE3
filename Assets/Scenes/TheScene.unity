@@ -1803,8 +1803,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c03deb5cd68fa043b5f62864210e64a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  elementAmount: 2
-  abilityAmount: 2
+  elementAmount: 10
+  abilityAmount: 5
   theCardSetterList:
   - {fileID: 738933616}
   - {fileID: 587031631}
