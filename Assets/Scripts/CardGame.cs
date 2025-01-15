@@ -21,9 +21,15 @@ public class CardGame : MonoBehaviour
 
     void Start()
     {
-        RandomizeDeck();
+        StartCoroutine(RandomizeDeckTimer());
         playerHealthDisplay.text = "Player: " + thePlayer.GetComponent<CharacterObject>().theHealth.ToString();
         enemyHealthDisplay.text = "Enemy: " + theEnemy.GetComponent<CharacterObject>().theHealth.ToString(); 
+    }
+
+    private System.Collections.IEnumerator RandomizeDeckTimer()
+    {
+        yield return new WaitForSeconds(0.001f);
+        RandomizeDeck();
     }
 
     void Update()
