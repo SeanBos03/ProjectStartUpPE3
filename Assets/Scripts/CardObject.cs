@@ -6,14 +6,13 @@ using TMPro;
 public class CardObject : MonoBehaviour
 {
     TMP_Text theText;
-    public int theNumber;
+    [HideInInspector] public int theNumber = 0;
     void Start()
     {
         theText = this.transform.Find("Canvas").Find("theText").GetComponent<TMP_Text>();
-        RandomText();
     }
 
-    void RandomText()
+    public void RandomText()
     {
         if (theText != null)
         {
