@@ -5,6 +5,7 @@ using TMPro;
 
 public class CardObject : MonoBehaviour
 {
+    public int amountGenerate;
     public int theValue;
     public string theType;
     TMP_Text theText; //used for ability card only

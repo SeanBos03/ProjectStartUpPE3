@@ -6,8 +6,8 @@ using System;
 using Unity.VisualScripting;
 public class CardGame : MonoBehaviour
 {
-    [SerializeField] int elementAmount = 10; //10
-    [SerializeField] int abilityAmount = 5;  //5
+   // [SerializeField] int elementAmount = 10; //10
+   // [SerializeField] int abilityAmount = 5;  //5
 
     [SerializeField] List<GameObject> theCardSetterList = new List<GameObject>();
     List<GameObject> theCardList = new List<GameObject>(); //list of cards the deck can draw from
@@ -38,20 +38,10 @@ public class CardGame : MonoBehaviour
         foreach (GameObject theCardSetter in theCardSetterList)
         {
             CardObject theCardObject = theCardSetter.GetComponent<CardObject>();
-            if (!theCardObject.isMultiplier)
-            {
-                for (int i = 1; i <= elementAmount; i++)
-                {
-                    theCardList.Add(theCardSetter);
-                }
-            }
 
-            else
+            for (int i = 1; i <= theCardObject.amountGenerate; i++)
             {
-                for (int i = 1; i <= abilityAmount; i++)
-                {
-                    theCardList.Add(theCardSetter);
-                }
+                theCardList.Add(theCardSetter);
             }
         }
     }

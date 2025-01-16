@@ -1803,8 +1803,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c03deb5cd68fa043b5f62864210e64a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  elementAmount: 10
-  abilityAmount: 5
   theCardSetterList:
   - {fileID: 738933616}
   - {fileID: 587031631}
@@ -3628,6 +3626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  amountGenerate: 10
   theValue: 4
   theType: Grass
   isMultiplier: 0
@@ -4263,6 +4262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  amountGenerate: 10
   theValue: 3
   theType: Ground
   isMultiplier: 0
@@ -4522,6 +4522,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  amountGenerate: 10
   theValue: 2
   theType: Water
   isMultiplier: 0
@@ -5387,6 +5388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  amountGenerate: 10
   theValue: 5
   theType: Thunder
   isMultiplier: 0
@@ -5652,6 +5654,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  amountGenerate: 5
   theValue: 0
   theType: 
   isMultiplier: 1
@@ -6031,6 +6034,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  amountGenerate: 10
   theValue: 1
   theType: Fire
   isMultiplier: 0
@@ -6191,6 +6195,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  amountGenerate: 0
   theValue: 0
   theType: 
   isMultiplier: 0
@@ -7803,6 +7808,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  amountGenerate: 0
   theValue: 0
   theType: 
   isMultiplier: 0
@@ -9797,6 +9803,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  amountGenerate: 0
   theValue: 0
   theType: 
   isMultiplier: 0
@@ -10025,6 +10032,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  amountGenerate: 5
   theValue: 0
   theType: 
   isMultiplier: 1
@@ -10900,6 +10908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  amountGenerate: 0
   theValue: 0
   theType: 
   isMultiplier: 0
@@ -12296,6 +12305,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  amountGenerate: 0
   theValue: 0
   theType: 
   isMultiplier: 0
