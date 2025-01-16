@@ -5,6 +5,7 @@ using TMPro;
 
 public class CardObject : MonoBehaviour
 {
+    [HideInInspector] public bool isMarked;
     public int amountGenerate;
     public int theValue;
     public string theType;

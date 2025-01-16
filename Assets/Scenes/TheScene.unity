@@ -3626,6 +3626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMarked: 0
   amountGenerate: 10
   theValue: 4
   theType: Grass
@@ -4262,6 +4263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMarked: 0
   amountGenerate: 10
   theValue: 3
   theType: Ground
@@ -4522,6 +4524,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMarked: 0
   amountGenerate: 10
   theValue: 2
   theType: Water
@@ -5388,6 +5391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMarked: 0
   amountGenerate: 10
   theValue: 5
   theType: Thunder
@@ -5654,6 +5658,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMarked: 0
   amountGenerate: 5
   theValue: 0
   theType: 
@@ -6034,6 +6039,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMarked: 0
   amountGenerate: 10
   theValue: 1
   theType: Fire
@@ -6195,6 +6201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMarked: 0
   amountGenerate: 0
   theValue: 0
   theType: 
@@ -7808,6 +7815,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMarked: 0
   amountGenerate: 0
   theValue: 0
   theType: 
@@ -9803,6 +9811,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMarked: 0
   amountGenerate: 0
   theValue: 0
   theType: 
@@ -10032,6 +10041,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMarked: 0
   amountGenerate: 5
   theValue: 0
   theType: 
@@ -10908,6 +10918,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMarked: 0
   amountGenerate: 0
   theValue: 0
   theType: 
@@ -12305,6 +12316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMarked: 0
   amountGenerate: 0
   theValue: 0
   theType: 

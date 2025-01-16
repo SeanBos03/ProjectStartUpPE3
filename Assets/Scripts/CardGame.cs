@@ -4,17 +4,12 @@ using UnityEngine;
 using TMPro;
 using System;
 using Unity.VisualScripting;
+using Unity.Burst.CompilerServices;
 public class CardGame : MonoBehaviour
 {
-   // [SerializeField] int elementAmount = 10; //10
-   // [SerializeField] int abilityAmount = 5;  //5
-
+    List<GameObject> cardSelectList = new List<GameObject>();
     [SerializeField] List<GameObject> theCardSetterList = new List<GameObject>();
     List<GameObject> theCardList = new List<GameObject>(); //list of cards the deck can draw from
-
-    GameObject card1 = null; //first card player is selecting
-    GameObject card2 = null; //second card play is sleecting
-    int theNumber;
 
     [SerializeField] TMP_Text playerHealthDisplay;
     [SerializeField] TMP_Text enemyHealthDisplay;
@@ -34,6 +29,7 @@ public class CardGame : MonoBehaviour
         StartCoroutine(RandomizeDeckTimer());
         playerHealthDisplay.text = "Player: " + thePlayer.GetComponent<CharacterObject>().theHealth.ToString();
         enemyHealthDisplay.text = "Enemy: " + theEnemy.GetComponent<CharacterObject>().theHealth.ToString();
+
         //generating the list
         foreach (GameObject theCardSetter in theCardSetterList)
         {
@@ -48,7 +44,25 @@ public class CardGame : MonoBehaviour
     private System.Collections.IEnumerator RandomizeDeckTimer()
     {
         yield return new WaitForSeconds(0.001f);
-        RandomizeDeck();
+
+        if (theCardList.Count < theDeck.Count)
+        {
+            Debug.Log("No card left!");
+            gameOver = true;
+            yield break;
+        }
+
+
+        foreach (GameObject theCard in theDeck)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, theCardList.Count);
+            GameObject randomCard = theCardList[randomIndex];
+            theCardList.RemoveAt(randomIndex);
+            theCard.GetComponent<CardObject>().ChangeCard(randomCard.GetComponent<CardObject>());
+        }
+
+        cardAmountDisplay.text = "Card amount: " + theCardList.Count.ToString();
+
     }
 
     void Update()
@@ -79,34 +93,56 @@ public class CardGame : MonoBehaviour
                     if (hit.collider.gameObject.name == "ConfirmButton")
                     {
                         //if both cards are selected, start dealing damage and update the values
-                        if (card1 != null && card2 != null)
+                        if (cardSelectList.Count >= 2)
                         {
-                            CardObject card1Card = card1.GetComponent<CardObject>();
-                            CardObject card2Card = card2.GetComponent<CardObject>();
+                            int valueSum = 0;
+                            int multiplierSum = 0;
 
-                            if (!card1Card.isMultiplier && !card2Card.isMultiplier)
+                            for (int i = 0; i < cardSelectList.Count; i++)
                             {
-                                theNumber = card1.GetComponent<CardObject>().theValue +
-                                card2.GetComponent<CardObject>().theValue;
+                                if (cardSelectList[i].GetComponent<CardObject>().isMultiplier)
+                                {
+                                    multiplierSum += cardSelectList[i].GetComponent<CardObject>().multiplierNumber;
+                                }
+
+                                else
+                                {
+                                    valueSum += cardSelectList[i].GetComponent<CardObject>().theValue;
+                                }
                             }
 
-                            else if (card1Card.isMultiplier && !card2Card.isMultiplier)
+                            //CardObject card1Card = card1.GetComponent<CardObject>();
+                            //CardObject card2Card = card2.GetComponent<CardObject>();
+
+                            //if (!card1Card.isMultiplier && !card2Card.isMultiplier)
+                            //{
+                            //    theNumber = card1.GetComponent<CardObject>().theValue +
+                            //    card2.GetComponent<CardObject>().theValue;
+                            //}
+
+                            //else if (card1Card.isMultiplier && !card2Card.isMultiplier)
+                            //{
+                            //    theNumber = card2.GetComponent<CardObject>().theValue * 
+                            //        card1.GetComponent<CardObject>().multiplierNumber;
+                            //}
+
+                            //else if (!card1Card.isMultiplier && card2Card.isMultiplier)
+                            //{
+                            //    theNumber = card1.GetComponent<CardObject>().theValue *
+                            //        card2.GetComponent<CardObject>().multiplierNumber;
+                            //}
+
+                            //else
+                            //{
+                            //    return;
+                            //}
+
+                            if (multiplierSum == 0)
                             {
-                                theNumber = card2.GetComponent<CardObject>().theValue * 
-                                    card1.GetComponent<CardObject>().multiplierNumber;
+                                multiplierSum = 1;
                             }
 
-                            else if (!card1Card.isMultiplier && card2Card.isMultiplier)
-                            {
-                                theNumber = card1.GetComponent<CardObject>().theValue *
-                                    card2.GetComponent<CardObject>().multiplierNumber;
-                            }
-
-                            else
-                            {
-                                return;
-                            }
-
+                            int theNumber = valueSum * multiplierSum;
 
                             theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber;
                             enemyHealthDisplay.text = "Enemy: " + theEnemy.GetComponent<CharacterObject>().theHealth.ToString();
@@ -136,18 +172,28 @@ public class CardGame : MonoBehaviour
                 {
                     if (hit.collider.CompareTag("Card"))
                     {
-                        if (hit.collider.gameObject == card1)
+                        foreach (GameObject theCard in cardSelectList)
                         {
-                            card1.transform.Find("cardMark").gameObject.SetActive(false);
-                            card1 = null;
-                        }
+                            if (hit.collider.gameObject == theCard)
+                            {
+                                theCard.GetComponent<CardObject>().isMarked = false;
+                                theCard.transform.Find("cardMark").gameObject.SetActive(false);
+                                cardSelectList.Remove(theCard);
+                                break;
 
-                        if (hit.collider.gameObject == card2)
-                        {
-                            card2.transform.Find("cardMark").gameObject.SetActive(false);
-                            card2 = null;
+                            }
                         }
+                        //if (hit.collider.gameObject == card1)
+                        //{
+                        //    card1.transform.Find("cardMark").gameObject.SetActive(false);
+                        //    card1 = null;
+                        //}
 
+                        //if (hit.collider.gameObject == card2)
+                        //{
+                        //    card2.transform.Find("cardMark").gameObject.SetActive(false);
+                        //    card2 = null;
+                        //}
                     }
                 }
             }
@@ -156,16 +202,12 @@ public class CardGame : MonoBehaviour
         //enemy's turn
         else
         {
-            card1.transform.Find("cardMark").gameObject.SetActive(false);
-            card2.transform.Find("cardMark").gameObject.SetActive(false);
+            int theNumber;
             theNumber = UnityEngine.Random.Range(2, 21);
             thePlayer.GetComponent<CharacterObject>().theHealth -= theNumber;
             playerHealthDisplay.text = "Player: " + thePlayer.GetComponent<CharacterObject>().theHealth.ToString();
             playerTurn = true;
-            card1 = null;
-            card2 = null;
 
-            
             Debug.Log("Enemy deals: " +  theNumber);
 
             if (thePlayer.GetComponent<CharacterObject>().theHealth <= 0)
@@ -175,7 +217,7 @@ public class CardGame : MonoBehaviour
                 return;
             }
 
-            if (theCardList.Count < theDeck.Count)
+            if (theCardList.Count < cardSelectList.Count)
             {
                 Debug.Log("No card left!");
                 gameOver = true;
@@ -187,7 +229,13 @@ public class CardGame : MonoBehaviour
                 RandomizeDeck();
             }
 
-            
+            foreach (GameObject theCard in cardSelectList)
+            {
+                theCard.gameObject.GetComponent<CardObject>().isMarked = false;
+                theCard.transform.Find("cardMark").gameObject.SetActive(false);
+            }
+            cardSelectList.Clear();
+
         }
     }
 
@@ -198,29 +246,50 @@ public class CardGame : MonoBehaviour
             return;
         }
 
-        if (card1 == null)
+        bool cardRepeat = false;
+        foreach (GameObject theCard in cardSelectList)
         {
-            card1 = cardObject;
-            card1.transform.Find("cardMark").gameObject.SetActive(true);
-            return;
+            if (theCard == cardObject)
+            {
+                cardRepeat = true;
+                break;
+            }
         }
 
-        if (card2 == null && cardObject != card1)
+        if (cardRepeat == false)
         {
-            card2 = cardObject;
-            card2.transform.Find("cardMark").gameObject.SetActive(true);
-            return;
+            cardObject.transform.Find("cardMark").gameObject.SetActive(true);
+            cardObject.gameObject.GetComponent<CardObject>().isMarked = true;
+            cardSelectList.Add(cardObject);
+            
         }
+
+        //if (card1 == null)
+        //{
+        //    card1 = cardObject;
+        //    card1.transform.Find("cardMark").gameObject.SetActive(true);
+        //    return;
+        //}
+
+        //if (card2 == null && cardObject != card1)
+        //{
+        //    card2 = cardObject;
+        //    card2.transform.Find("cardMark").gameObject.SetActive(true);
+        //    return;
+        //}
     }
 
     void RandomizeDeck()
     {
         foreach (GameObject theCard in theDeck)
         {
-            int randomIndex = UnityEngine.Random.Range(0, theCardList.Count);
-            GameObject randomCard = theCardList[randomIndex];
-            theCardList.RemoveAt(randomIndex);
-            theCard.GetComponent<CardObject>().ChangeCard(randomCard.GetComponent<CardObject>());
+            if (theCard.GetComponent<CardObject>().isMarked == true)
+            {
+                int randomIndex = UnityEngine.Random.Range(0, theCardList.Count);
+                GameObject randomCard = theCardList[randomIndex];
+                theCardList.RemoveAt(randomIndex);
+                theCard.GetComponent<CardObject>().ChangeCard(randomCard.GetComponent<CardObject>());
+            }
         }
 
         cardAmountDisplay.text = "Card amount: " + theCardList.Count.ToString();
