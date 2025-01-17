@@ -5,6 +5,7 @@ using TMPro;
 
 public class CardObject : MonoBehaviour
 {
+    public int manaCost = 2;
     [HideInInspector] public bool isMarked;
     public int amountGenerate;
     public int theValue;
@@ -34,6 +35,7 @@ public class CardObject : MonoBehaviour
         multiplierNumber = other.multiplierNumber;
         theValue = other.theValue;
         theType = other.theType;
+        manaCost = other.manaCost;
         this.transform.Find("ElementDisplay").gameObject.GetComponent<Renderer>().material =
         other.transform.Find("ElementDisplay").gameObject.GetComponent<Renderer>().material;
 

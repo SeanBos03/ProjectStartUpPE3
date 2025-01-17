@@ -7,13 +7,18 @@ using Unity.VisualScripting;
 using Unity.Burst.CompilerServices;
 public class CardGame : MonoBehaviour
 {
+    [SerializeField] int mana = 10;
+    [SerializeField] int manaMaxValue = 10;
+    [SerializeField] int manaRecovery = 1;
     List<GameObject> cardSelectList = new List<GameObject>();
     [SerializeField] List<GameObject> theCardSetterList = new List<GameObject>();
     List<GameObject> theCardList = new List<GameObject>(); //list of cards the deck can draw from
 
     [SerializeField] TMP_Text playerHealthDisplay;
     [SerializeField] TMP_Text enemyHealthDisplay;
+    [SerializeField] TMP_Text manaDisplay;
     [SerializeField] TMP_Text cardAmountDisplay;
+
 
     [SerializeField] GameObject thePlayer;
     [SerializeField] GameObject theEnemy;
@@ -26,6 +31,7 @@ public class CardGame : MonoBehaviour
     public LayerMask ignoreLayer;  // Reference to the layer that ray ignore
     void Start()
     {
+        manaDisplay.text = "Mana: " + mana;
         StartCoroutine(RandomizeDeckTimer());
         playerHealthDisplay.text = "Player: " + thePlayer.GetComponent<CharacterObject>().theHealth.ToString();
         enemyHealthDisplay.text = "Enemy: " + theEnemy.GetComponent<CharacterObject>().theHealth.ToString();
@@ -111,32 +117,6 @@ public class CardGame : MonoBehaviour
                                 }
                             }
 
-                            //CardObject card1Card = card1.GetComponent<CardObject>();
-                            //CardObject card2Card = card2.GetComponent<CardObject>();
-
-                            //if (!card1Card.isMultiplier && !card2Card.isMultiplier)
-                            //{
-                            //    theNumber = card1.GetComponent<CardObject>().theValue +
-                            //    card2.GetComponent<CardObject>().theValue;
-                            //}
-
-                            //else if (card1Card.isMultiplier && !card2Card.isMultiplier)
-                            //{
-                            //    theNumber = card2.GetComponent<CardObject>().theValue * 
-                            //        card1.GetComponent<CardObject>().multiplierNumber;
-                            //}
-
-                            //else if (!card1Card.isMultiplier && card2Card.isMultiplier)
-                            //{
-                            //    theNumber = card1.GetComponent<CardObject>().theValue *
-                            //        card2.GetComponent<CardObject>().multiplierNumber;
-                            //}
-
-                            //else
-                            //{
-                            //    return;
-                            //}
-
                             if (multiplierSum == 0)
                             {
                                 multiplierSum = 1;
@@ -147,7 +127,7 @@ public class CardGame : MonoBehaviour
                             theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber;
                             enemyHealthDisplay.text = "Enemy: " + theEnemy.GetComponent<CharacterObject>().theHealth.ToString();
                             Debug.Log("Player deals: " + theNumber);
-                            playerTurn = false;
+                            
 
                             //game over feature - if enemy got defeated
                             if (theEnemy.GetComponent<CharacterObject>().theHealth <= 0)
@@ -157,7 +137,13 @@ public class CardGame : MonoBehaviour
                             }
                         }
 
+                        if (cardSelectList.Count == 1)
+                        {
+                            cardSelectList[0].gameObject.GetComponent<CardObject>().isMarked = false;
+                            cardSelectList[0].transform.Find("cardMark").gameObject.SetActive(false);
 
+                        }
+                            playerTurn = false;
                     }
                 }
             }
@@ -174,8 +160,10 @@ public class CardGame : MonoBehaviour
                     {
                         foreach (GameObject theCard in cardSelectList)
                         {
-                            if (hit.collider.gameObject == theCard)
+                            if (hit.collider.gameObject == theCard && theCard.GetComponent<CardObject>().isMarked == true)
                             {
+                                mana += theCard.gameObject.GetComponent<CardObject>().manaCost;
+                                manaDisplay.text = "Mana: " + mana;
                                 theCard.GetComponent<CardObject>().isMarked = false;
                                 theCard.transform.Find("cardMark").gameObject.SetActive(false);
                                 cardSelectList.Remove(theCard);
@@ -183,17 +171,6 @@ public class CardGame : MonoBehaviour
 
                             }
                         }
-                        //if (hit.collider.gameObject == card1)
-                        //{
-                        //    card1.transform.Find("cardMark").gameObject.SetActive(false);
-                        //    card1 = null;
-                        //}
-
-                        //if (hit.collider.gameObject == card2)
-                        //{
-                        //    card2.transform.Find("cardMark").gameObject.SetActive(false);
-                        //    card2 = null;
-                        //}
                     }
                 }
             }
@@ -236,6 +213,16 @@ public class CardGame : MonoBehaviour
             }
             cardSelectList.Clear();
 
+            mana += manaRecovery;
+
+            if (mana > manaMaxValue)
+            {
+                mana = manaMaxValue;
+            }
+
+
+            manaDisplay.text = "Mana: " + mana;
+
         }
     }
 
@@ -256,27 +243,14 @@ public class CardGame : MonoBehaviour
             }
         }
 
-        if (cardRepeat == false)
+        if (cardRepeat == false && mana >= cardObject.gameObject.GetComponent<CardObject>().manaCost)
         {
             cardObject.transform.Find("cardMark").gameObject.SetActive(true);
             cardObject.gameObject.GetComponent<CardObject>().isMarked = true;
             cardSelectList.Add(cardObject);
-            
+            mana -= cardObject.gameObject.GetComponent<CardObject>().manaCost;
+            manaDisplay.text = "Mana: " + mana;
         }
-
-        //if (card1 == null)
-        //{
-        //    card1 = cardObject;
-        //    card1.transform.Find("cardMark").gameObject.SetActive(true);
-        //    return;
-        //}
-
-        //if (card2 == null && cardObject != card1)
-        //{
-        //    card2 = cardObject;
-        //    card2.transform.Find("cardMark").gameObject.SetActive(true);
-        //    return;
-        //}
     }
 
     void RandomizeDeck()
