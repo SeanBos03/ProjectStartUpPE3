@@ -87,7 +87,7 @@ public class CardGame : MonoBehaviour
                 Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red, 0.5f);
 
                 //see if player clicks on a card
-                if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, ~ignoreLayer))
+                if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, ~ignoreLayer)) 
                 {
                     //card object click
                     if (hit.collider.CompareTag("Card"))
