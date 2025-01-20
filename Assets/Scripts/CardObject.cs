@@ -6,7 +6,7 @@ using TMPro;
 public class CardObject : MonoBehaviour
 {
     public int manaCost = 2;
-    [HideInInspector] public bool isMarked;
+    [HideInInspector] public bool isMarked; //if true, at enemy's turn, card will possibly be refreshed
     public int amountGenerate;
     public int theValue;
     public string theType;

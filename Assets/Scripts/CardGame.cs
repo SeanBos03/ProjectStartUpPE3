@@ -198,6 +198,7 @@ public class CardGame : MonoBehaviour
         //enemy's turn
         else
         {
+            int amountCardMissing = 0;  
             foreach (GameObject theCard in theDeck)
             {
                 if (theCard.GetComponent<CardObject>().isMarked == true)
@@ -210,7 +211,7 @@ public class CardGame : MonoBehaviour
 
                 if (!theCard.activeSelf)
                 {
-                    theCard.SetActive(true);
+                    amountCardMissing++;
                 }
             }
 
@@ -230,7 +231,7 @@ public class CardGame : MonoBehaviour
                 return;
             }
 
-            if (theCardList.Count < cardSelectList.Count)
+            if (theCardList.Count < amountCardMissing)
             {
                 Debug.Log("No card left!");
                 gameOver = true;
@@ -285,8 +286,16 @@ public class CardGame : MonoBehaviour
     {
         foreach (GameObject theCard in theDeck)
         {
-            if (theCard.GetComponent<CardObject>().isMarked == true)
+            //if (theCard.GetComponent<CardObject>().isMarked == true)
+            //{
+            //    int randomIndex = UnityEngine.Random.Range(0, theCardList.Count);
+            //    GameObject randomCard = theCardList[randomIndex];
+            //    theCardList.RemoveAt(randomIndex);
+            //    theCard.GetComponent<CardObject>().ChangeCard(randomCard.GetComponent<CardObject>());
+            //}
+            if (!theCard.activeSelf)
             {
+                theCard.SetActive(true);
                 int randomIndex = UnityEngine.Random.Range(0, theCardList.Count);
                 GameObject randomCard = theCardList[randomIndex];
                 theCardList.RemoveAt(randomIndex);
