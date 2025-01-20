@@ -8,6 +8,7 @@ public class Room : MonoBehaviour
     public enum RoomType { None, Battle, Shop, Boss }
     public RoomType roomType;
 
+
     [Header("Room Settings")]
     public Vector2 position; // Position in the map of each room to place them 
     public Room[] connectedRooms; // Array of connected rooms

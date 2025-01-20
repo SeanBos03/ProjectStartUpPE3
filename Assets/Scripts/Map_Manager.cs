@@ -58,52 +58,31 @@ public class MapManager : MonoBehaviour
         rooms = new GameObject[roomPositions.Length];
         int shopCount = 0;
 
-        // Track assigned shop indices
-        List<int> shopIndices = new List<int>();
-
-        // Pre-determine shop placement
-        while (shopCount < maxShops)
-        {
-            int randomIndex = Random.Range(0, roomPositions.Length - 1); // Exclude the boss room index
-            if (!shopIndices.Contains(randomIndex))
-            {
-                shopIndices.Add(randomIndex);
-                shopCount++;
-            }
-        }
-
-        // Debug to ensure correct shop indices are chosen
-        Debug.Log($"Shop indices: {string.Join(", ", shopIndices)}");
-
-        // Instantiate rooms
         for (int i = 0; i < roomPositions.Length; i++)
         {
-            // Determine room type
-            RoomType roomType = (i == roomPositions.Length - 1) ? RoomType.Boss : RoomType.Battle;
-            // Assign shop type if eligible
+            Room.RoomType roomType = Room.RoomType.Battle;
 
-            if (roomType != RoomType.Boss && shopCount < maxShops && Random.value > 0.7f)
+            // Set room type
+            if (i == roomPositions.Length - 1) // Last room is always Boss
             {
-                roomType = RoomType.Shop;
+                roomType = Room.RoomType.Boss;
+            }
+            else if (shopCount < maxShops && Random.value > 0.7f) // Random chance for Shop
+            {
+                roomType = Room.RoomType.Shop;
                 shopCount++;
-                Debug.Log($"Shop generated at index {i}");
             }
 
-            // Instantiate prefab and assign properties
-            GameObject prefabToInstantiate = (roomType == RoomType.Boss) ? bossRoomPrefab : roomPrefabs[Random.Range(0, roomPrefabs.Length)];
+            // Instantiate the appropriate prefab
+            GameObject prefabToInstantiate = (roomType == Room.RoomType.Boss) ? bossRoomPrefab : roomPrefabs[Random.Range(0, roomPrefabs.Length)];
             GameObject roomObject = Instantiate(prefabToInstantiate, roomPositions[i], Quaternion.identity, mapParent);
-
 
             // Assign properties to Room component
             Room roomScript = roomObject.GetComponent<Room>();
+
+            roomScript.roomType = roomType;
             roomScript.position = roomPositions[i];
-            roomScript.roomType = roomType;
 
-            rooms[i] = roomObject;
-        
-
-
-            roomScript.roomType = roomType;
             rooms[i] = roomObject;
 
             // Customize the room's appearance
@@ -114,15 +93,16 @@ public class MapManager : MonoBehaviour
         for (int i = 0; i < roomPositions.Length; i++)
         {
             Room roomScript = rooms[i].GetComponent<Room>();
-            roomScript.connectedRooms = new Room[roomPositions.Length];
+            List<Room> connectedRoomList = new List<Room>();
 
             for (int j = 0; j < roomPositions.Length; j++)
             {
                 if (connections[i, j] == 1)
                 {
-                    roomScript.connectedRooms[j] = rooms[j].GetComponent<Room>();
+                    connectedRoomList.Add(rooms[j].GetComponent<Room>());
                 }
             }
+            roomScript.connectedRooms = connectedRoomList.ToArray();
         }
 
         // Final Debugging to ensure no duplicate shops
@@ -137,5 +117,3 @@ public class MapManager : MonoBehaviour
         Debug.Log($"Total Shops Generated: {totalShops}");
     }
 }
-        
-    
