@@ -95,6 +95,12 @@ public class CardGame : MonoBehaviour
                         HandleCardClick(hit.collider.gameObject);
                     }
 
+                    //end turn button click
+                    if (hit.collider.gameObject.name == "EndTurnButton")
+                    {
+                        playerTurn = false;
+                    }
+
                     //confirm button click
                     if (hit.collider.gameObject.name == "ConfirmButton")
                     {
@@ -135,15 +141,28 @@ public class CardGame : MonoBehaviour
                                 gameOver = true;
                                 Debug.Log("Player won");
                             }
+
+                            foreach (GameObject theCard in cardSelectList)
+                            {
+                                //trying to find what card of the card is storing theCard, then, if found, disable that deck object to get the 'removed' effect
+                                int index = theDeck.FindIndex(a => a == theCard);
+                                if (index != -1)
+                                {
+                                    theDeck[index].gameObject.SetActive(false);
+                                }
+                                theCard.gameObject.GetComponent<CardObject>().isMarked = false;
+                                theCard.transform.Find("cardMark").gameObject.SetActive(false);
+                            }
+                            cardSelectList.Clear();
                         }
 
                         if (cardSelectList.Count == 1)
                         {
+                            mana += cardSelectList[0].gameObject.GetComponent<CardObject>().manaCost;
+                            manaDisplay.text = "Mana: " + mana;
                             cardSelectList[0].gameObject.GetComponent<CardObject>().isMarked = false;
                             cardSelectList[0].transform.Find("cardMark").gameObject.SetActive(false);
-
                         }
-                            playerTurn = false;
                     }
                 }
             }
@@ -179,6 +198,15 @@ public class CardGame : MonoBehaviour
         //enemy's turn
         else
         {
+            foreach (GameObject theCard in theDeck)
+            {
+                if (!theCard.activeSelf)
+                {
+                    theCard.SetActive(true);
+                }
+            }
+
+
             int theNumber;
             theNumber = UnityEngine.Random.Range(2, 21);
             thePlayer.GetComponent<CharacterObject>().theHealth -= theNumber;
@@ -206,20 +234,12 @@ public class CardGame : MonoBehaviour
                 RandomizeDeck();
             }
 
-            foreach (GameObject theCard in cardSelectList)
-            {
-                theCard.gameObject.GetComponent<CardObject>().isMarked = false;
-                theCard.transform.Find("cardMark").gameObject.SetActive(false);
-            }
-            cardSelectList.Clear();
-
             mana += manaRecovery;
 
             if (mana > manaMaxValue)
             {
                 mana = manaMaxValue;
             }
-
 
             manaDisplay.text = "Mana: " + mana;
 
