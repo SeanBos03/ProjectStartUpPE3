@@ -95,6 +95,12 @@ public class CardGame : MonoBehaviour
                         HandleCardClick(hit.collider.gameObject);
                     }
 
+                    //end turn button click
+                    if (hit.collider.gameObject.name == "EndTurnButton")
+                    {
+                        playerTurn = false;
+                    }
+
                     //confirm button click
                     if (hit.collider.gameObject.name == "ConfirmButton")
                     {
@@ -135,15 +141,28 @@ public class CardGame : MonoBehaviour
                                 gameOver = true;
                                 Debug.Log("Player won");
                             }
+
+                            foreach (GameObject theCard in cardSelectList)
+                            {
+                                //trying to find what card of the card is storing theCard, then, if found, disable that deck object to get the 'removed' effect
+                                int index = theDeck.FindIndex(a => a == theCard);
+                                if (index != -1)
+                                {
+                                    theDeck[index].gameObject.SetActive(false);
+                                }
+                                theCard.gameObject.GetComponent<CardObject>().isMarked = false;
+                                theCard.transform.Find("cardMark").gameObject.SetActive(false);
+                            }
+                            cardSelectList.Clear();
                         }
 
                         if (cardSelectList.Count == 1)
                         {
+                            mana += cardSelectList[0].gameObject.GetComponent<CardObject>().manaCost;
+                            manaDisplay.text = "Mana: " + mana;
                             cardSelectList[0].gameObject.GetComponent<CardObject>().isMarked = false;
                             cardSelectList[0].transform.Find("cardMark").gameObject.SetActive(false);
-
                         }
-                            playerTurn = false;
                     }
                 }
             }
@@ -179,6 +198,24 @@ public class CardGame : MonoBehaviour
         //enemy's turn
         else
         {
+            int amountCardMissing = 0;  
+            foreach (GameObject theCard in theDeck)
+            {
+                if (theCard.GetComponent<CardObject>().isMarked == true)
+                {
+                    theCard.GetComponent<CardObject>().isMarked = false;
+                    theCard.transform.Find("cardMark").gameObject.SetActive(false);
+                    mana += theCard.gameObject.GetComponent<CardObject>().manaCost;
+                    cardSelectList.Remove(theCard);
+                }
+
+                if (!theCard.activeSelf)
+                {
+                    amountCardMissing++;
+                }
+            }
+
+
             int theNumber;
             theNumber = UnityEngine.Random.Range(2, 21);
             thePlayer.GetComponent<CharacterObject>().theHealth -= theNumber;
@@ -194,7 +231,7 @@ public class CardGame : MonoBehaviour
                 return;
             }
 
-            if (theCardList.Count < cardSelectList.Count)
+            if (theCardList.Count < amountCardMissing)
             {
                 Debug.Log("No card left!");
                 gameOver = true;
@@ -206,20 +243,12 @@ public class CardGame : MonoBehaviour
                 RandomizeDeck();
             }
 
-            foreach (GameObject theCard in cardSelectList)
-            {
-                theCard.gameObject.GetComponent<CardObject>().isMarked = false;
-                theCard.transform.Find("cardMark").gameObject.SetActive(false);
-            }
-            cardSelectList.Clear();
-
             mana += manaRecovery;
 
             if (mana > manaMaxValue)
             {
                 mana = manaMaxValue;
             }
-
 
             manaDisplay.text = "Mana: " + mana;
 
@@ -257,8 +286,16 @@ public class CardGame : MonoBehaviour
     {
         foreach (GameObject theCard in theDeck)
         {
-            if (theCard.GetComponent<CardObject>().isMarked == true)
+            //if (theCard.GetComponent<CardObject>().isMarked == true)
+            //{
+            //    int randomIndex = UnityEngine.Random.Range(0, theCardList.Count);
+            //    GameObject randomCard = theCardList[randomIndex];
+            //    theCardList.RemoveAt(randomIndex);
+            //    theCard.GetComponent<CardObject>().ChangeCard(randomCard.GetComponent<CardObject>());
+            //}
+            if (!theCard.activeSelf)
             {
+                theCard.SetActive(true);
                 int randomIndex = UnityEngine.Random.Range(0, theCardList.Count);
                 GameObject randomCard = theCardList[randomIndex];
                 theCardList.RemoveAt(randomIndex);
