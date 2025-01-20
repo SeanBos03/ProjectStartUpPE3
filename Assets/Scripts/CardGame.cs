@@ -19,7 +19,6 @@ public class CardGame : MonoBehaviour
     [SerializeField] TMP_Text manaDisplay;
     [SerializeField] TMP_Text cardAmountDisplay;
 
-
     [SerializeField] GameObject thePlayer;
     [SerializeField] GameObject theEnemy;
 
@@ -104,15 +103,23 @@ public class CardGame : MonoBehaviour
                     //confirm button click
                     if (hit.collider.gameObject.name == "ConfirmButton")
                     {
+                        if (cardSelectList.Count == 1)
+                        {
+                            mana += cardSelectList[0].gameObject.GetComponent<CardObject>().manaCost;
+                            manaDisplay.text = "Mana: " + mana;
+                            cardSelectList[0].gameObject.GetComponent<CardObject>().isMarked = false;
+                            cardSelectList[0].transform.Find("cardMark").gameObject.SetActive(false);
+                            cardSelectList.Clear();
+                        }
                         //if both cards are selected, start dealing damage and update the values
-                        if (cardSelectList.Count >= 2)
+                        else if (cardSelectList.Count >= 2)
                         {
                             int valueSum = 0;
                             int multiplierSum = 0;
 
                             for (int i = 0; i < cardSelectList.Count; i++)
                             {
-                                if (cardSelectList[i].GetComponent<CardObject>().isMultiplier)
+                                if (cardSelectList[i].GetComponent<CardObject>().theType.Contains("Multiplier"))
                                 {
                                     multiplierSum += cardSelectList[i].GetComponent<CardObject>().multiplierNumber;
                                 }
@@ -154,14 +161,6 @@ public class CardGame : MonoBehaviour
                                 theCard.transform.Find("cardMark").gameObject.SetActive(false);
                             }
                             cardSelectList.Clear();
-                        }
-
-                        if (cardSelectList.Count == 1)
-                        {
-                            mana += cardSelectList[0].gameObject.GetComponent<CardObject>().manaCost;
-                            manaDisplay.text = "Mana: " + mana;
-                            cardSelectList[0].gameObject.GetComponent<CardObject>().isMarked = false;
-                            cardSelectList[0].transform.Find("cardMark").gameObject.SetActive(false);
                         }
                     }
                 }
@@ -286,13 +285,6 @@ public class CardGame : MonoBehaviour
     {
         foreach (GameObject theCard in theDeck)
         {
-            //if (theCard.GetComponent<CardObject>().isMarked == true)
-            //{
-            //    int randomIndex = UnityEngine.Random.Range(0, theCardList.Count);
-            //    GameObject randomCard = theCardList[randomIndex];
-            //    theCardList.RemoveAt(randomIndex);
-            //    theCard.GetComponent<CardObject>().ChangeCard(randomCard.GetComponent<CardObject>());
-            //}
             if (!theCard.activeSelf)
             {
                 theCard.SetActive(true);
