@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Room : MonoBehaviour
 {
-    public enum RoomType { Battle, Shop, BossFight}
+    public enum RoomType { None, Battle, Shop, Boss }
     public RoomType roomType;
 
     [Header("Room Settings")]
-    public Vector2 position;  // Position in the map of each room to place them 
-    public Room[] connectedRooms; // Array of connected rooms because that way we can keep track of what rooms the player can access
+    public Vector2 position; // Position in the map of each room to place them 
+    public Room[] connectedRooms; // Array of connected rooms
 
     void OnDrawGizmos()
     {
@@ -29,20 +30,22 @@ public class Room : MonoBehaviour
 
     private void OnMouseDown()
     {
-        // Handle clicking on the room
         Debug.Log($"Entered {roomType} room at position {position}");
-    }
 
-
-// Start is called before the first frame update
-void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        switch (roomType)
+        {
+            case RoomType.Battle:
+                SceneManager.LoadScene("TheScene");
+                break;
+            case RoomType.Shop:
+                SceneManager.LoadScene("Shop");
+                break;
+            case RoomType.Boss:
+                SceneManager.LoadScene("BossRoom");
+                break;
+            default:
+                Debug.LogError($"Room at position {position} has an invalid or unassigned RoomType!");
+                break;
+        }
     }
 }
