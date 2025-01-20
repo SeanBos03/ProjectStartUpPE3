@@ -8,4 +8,22 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Chapter 1 Map.unity
+    guid: 5f0b2201297627244809c17cc12a95db
+  - enabled: 1
+    path: Assets/Scenes/JelmerVFXScene.unity
+    guid: a97ddccfccee45448b439525e2dea691
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 27a3038bf1c454a449fa050549887ff9
+  - enabled: 1
+    path: Assets/Scenes/TheScene.unity
+    guid: 73d4f6d0bd87c0b4496d1a2a512dfe3d
+  - enabled: 1
+    path: Assets/Scenes/BossRoom.unity
+    guid: 4c38eff26d1821e4cb4c2fb5be9d618c
+  - enabled: 1
+    path: Assets/Scenes/Shop.unity
+    guid: 16a5e2dd9281539419afdcf13484da4c
   m_configObjects: {}
