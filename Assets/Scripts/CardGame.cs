@@ -200,6 +200,14 @@ public class CardGame : MonoBehaviour
         {
             foreach (GameObject theCard in theDeck)
             {
+                if (theCard.GetComponent<CardObject>().isMarked == true)
+                {
+                    theCard.GetComponent<CardObject>().isMarked = false;
+                    theCard.transform.Find("cardMark").gameObject.SetActive(false);
+                    mana += theCard.gameObject.GetComponent<CardObject>().manaCost;
+                    cardSelectList.Remove(theCard);
+                }
+
                 if (!theCard.activeSelf)
                 {
                     theCard.SetActive(true);
