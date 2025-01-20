@@ -8,7 +8,6 @@ public class Room : MonoBehaviour
     public enum RoomType { None, Battle, Shop, Boss }
     public RoomType roomType;
 
-
     [Header("Room Settings")]
     public Vector2 position; // Position in the map of each room to place them 
     public Room[] connectedRooms; // Array of connected rooms
@@ -36,10 +35,10 @@ public class Room : MonoBehaviour
         switch (roomType)
         {
             case RoomType.Battle:
-                SceneManager.LoadScene("TheScene");
+                SceneManager.LoadScene("BattleScene");
                 break;
             case RoomType.Shop:
-                SceneManager.LoadScene("Shop");
+                SceneManager.LoadScene("ShopScene");
                 break;
             case RoomType.Boss:
                 SceneManager.LoadScene("BossRoom");

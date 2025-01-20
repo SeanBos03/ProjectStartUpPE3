@@ -291,16 +291,13 @@ MonoBehaviour:
   roomPrefabs:
   - {fileID: 1406492013473792636, guid: 0290781c05ec0f34c98cb00c67781395, type: 3}
   - {fileID: 3109755680963625058, guid: 81e4435a23fd80347b4e0303b56d4076, type: 3}
-  mapParent: {fileID: 0}
-  maxShops: 1
   bossRoomPrefab: {fileID: 9149675873709987992, guid: 4f478938948966841927a891fc8304be,
     type: 3}
-  roomPositions:
-  - {x: 0, y: 0}
-  - {x: 2, y: 0}
-  - {x: 4, y: 0}
-  - {x: 2, y: -2}
-  - {x: 1, y: 1}
+  mapParent: {fileID: 0}
+  totalRooms: 10
+  branchProbability: 0.4
+  roomSpacing: 10
+  maxRoomOffset: 5
 --- !u!1 &248347989
 GameObject:
   m_ObjectHideFlags: 0
