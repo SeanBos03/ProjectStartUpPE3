@@ -149,10 +149,7 @@ public class CardGame : MonoBehaviour
                     //confirm button click
                     if (hit.collider.gameObject.name == "ConfirmButton")
                     {
-                        if (resultMana > manaMaxValue)
-                        {
-                            resultMana = manaMaxValue;
-                        }
+                        
 
                         if (resultMana < 0)
                         {
@@ -210,6 +207,11 @@ public class CardGame : MonoBehaviour
                             }
                             cardSelectList.Clear();
                             
+                        }
+
+                        if (resultMana > manaMaxValue)
+                        {
+                            resultMana = manaMaxValue;
                         }
 
                         foreach (GameObject theCard in cardDelteList)
