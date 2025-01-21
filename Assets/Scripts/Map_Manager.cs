@@ -10,7 +10,6 @@ public class MapManager : MonoBehaviour
     public GameObject startRoomPrefab; // Start Room prefab
     public Transform mapParent; // Parent object to hold all rooms
     public static MapManager instance;
-    
 
     [Header("Map Settings")]
     public int totalPillars = 5; // Number of vertical pillars
@@ -27,8 +26,6 @@ public class MapManager : MonoBehaviour
     public float currentShopAmount = 0f;
     public float maxShopAmount = 3f;
     public float maxRoomThreshold = 5f;
-
-
 
     void Start()
     {
@@ -56,8 +53,6 @@ public class MapManager : MonoBehaviour
             room.isLocked = false;
         }
     }
-
-    
 
     void GenerateMap()
     {
@@ -183,12 +178,11 @@ public class MapManager : MonoBehaviour
         {
             return 2;
         }
-        else 
+        else
         {
             maxRoomThreshold *= 1.5f;
             return 3;
         }
-
     }
 
 
@@ -210,5 +204,9 @@ public class MapManager : MonoBehaviour
                 spriteRenderer.color = Color.black;
                 break;
         }
+    }
+    private void OnMouseOver()
+    {
+        
     }
 }
