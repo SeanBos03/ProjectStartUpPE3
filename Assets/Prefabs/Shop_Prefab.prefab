@@ -118,6 +118,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 611358b2f3b235c4799b63ce6fd29768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomType: 0
+  roomType: 2
   position: {x: 0, y: 0}
   connectedRooms: []
+  linePrefab: {fileID: 5509917376155848855, guid: 231bc60b66898e44282f945b5478a5f9,
+    type: 3}
