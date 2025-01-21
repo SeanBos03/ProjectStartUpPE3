@@ -10,13 +10,15 @@ public class CardGame : MonoBehaviour
     [SerializeField] int mana = 10;
     [SerializeField] int manaMaxValue = 10;
     [SerializeField] int manaRecovery = 1;
-    List<GameObject> cardSelectList = new List<GameObject>();
+    List<GameObject> cardSelectList = new List<GameObject>(); //list of marked/selected cards
+    List<GameObject> cardDelteList = new List<GameObject>(); //list of to be deleted cards
     [SerializeField] List<GameObject> theCardSetterList = new List<GameObject>();
     List<GameObject> theCardList = new List<GameObject>(); //list of cards the deck can draw from
 
     [SerializeField] TMP_Text playerHealthDisplay;
     [SerializeField] TMP_Text enemyHealthDisplay;
     [SerializeField] TMP_Text manaDisplay;
+    [SerializeField] TMP_Text resultManaDisplay;
     [SerializeField] TMP_Text cardAmountDisplay;
 
     [SerializeField] GameObject thePlayer;
@@ -26,11 +28,14 @@ public class CardGame : MonoBehaviour
 
     bool playerTurn = true;
     bool gameOver;
+    int resultMana;
 
     public LayerMask ignoreLayer;  // Reference to the layer that ray ignore
     void Start()
     {
+        resultMana = mana;
         manaDisplay.text = "Mana: " + mana;
+        resultManaDisplay.text = "Result mana: " + resultMana;
         StartCoroutine(RandomizeDeckTimer());
         playerHealthDisplay.text = "Player: " + thePlayer.GetComponent<CharacterObject>().theHealth.ToString();
         enemyHealthDisplay.text = "Enemy: " + theEnemy.GetComponent<CharacterObject>().theHealth.ToString();
@@ -46,6 +51,8 @@ public class CardGame : MonoBehaviour
             }
         }
     }
+
+    //at start, place cards at the deck
     private System.Collections.IEnumerator RandomizeDeckTimer()
     {
         yield return new WaitForSeconds(0.001f);
@@ -91,7 +98,46 @@ public class CardGame : MonoBehaviour
                     //card object click
                     if (hit.collider.CompareTag("Card"))
                     {
-                        HandleCardClick(hit.collider.gameObject);
+                        //click marked card to unselected
+                        if (hit.collider.gameObject.GetComponent<CardObject>().isMarked == true)
+                        {
+                            foreach (GameObject theCard in cardSelectList)
+                            {
+                                if (hit.collider.gameObject == theCard)
+                                {
+                                    resultMana += theCard.gameObject.GetComponent<CardObject>().manaCost;
+                                    CheckAndDisplayResultMana();
+                                    theCard.GetComponent<CardObject>().isMarked = false;
+                                    theCard.transform.Find("cardMark").gameObject.SetActive(false);
+                                    cardSelectList.Remove(theCard);
+                                    break;
+                                }
+                            }
+                        }
+
+                        //click toBeDeleredCard card to unselect
+                        else if (hit.collider.gameObject.GetComponent<CardObject>().isToBeDeleted == true)
+                        {
+                            foreach (GameObject theCard in cardDelteList)
+                            {
+                                if (hit.collider.gameObject == theCard)
+                                {
+                                    resultMana -= theCard.gameObject.GetComponent<CardObject>().manaCost;
+                                    CheckAndDisplayResultMana();
+                                    theCard.GetComponent<CardObject>().isToBeDeleted = false;
+                                    theCard.transform.Find("cardMarkDelete").gameObject.SetActive(false);
+                                    cardDelteList.Remove(theCard);
+                                    break;
+                                }
+                            }
+                        }
+
+                        //select unmarked card
+                        else
+                        {
+                            HandleCardClick(hit.collider.gameObject);
+                        }
+                        
                     }
 
                     //end turn button click
@@ -103,14 +149,23 @@ public class CardGame : MonoBehaviour
                     //confirm button click
                     if (hit.collider.gameObject.name == "ConfirmButton")
                     {
+                        if (resultMana > manaMaxValue)
+                        {
+                            resultMana = manaMaxValue;
+                        }
+
+                        if (resultMana < 0)
+                        {
+                            return;
+                        }
+
+                        //if only 1 card is marked
                         if (cardSelectList.Count == 1)
                         {
-                            mana += cardSelectList[0].gameObject.GetComponent<CardObject>().manaCost;
-                            manaDisplay.text = "Mana: " + mana;
-                            cardSelectList[0].gameObject.GetComponent<CardObject>().isMarked = false;
-                            cardSelectList[0].transform.Find("cardMark").gameObject.SetActive(false);
+                            UnselectCard(cardSelectList[0]);
                             cardSelectList.Clear();
                         }
+
                         //if both cards are selected, start dealing damage and update the values
                         else if (cardSelectList.Count >= 2)
                         {
@@ -151,17 +206,21 @@ public class CardGame : MonoBehaviour
 
                             foreach (GameObject theCard in cardSelectList)
                             {
-                                //trying to find what card of the card is storing theCard, then, if found, disable that deck object to get the 'removed' effect
-                                int index = theDeck.FindIndex(a => a == theCard);
-                                if (index != -1)
-                                {
-                                    theDeck[index].gameObject.SetActive(false);
-                                }
-                                theCard.gameObject.GetComponent<CardObject>().isMarked = false;
-                                theCard.transform.Find("cardMark").gameObject.SetActive(false);
+                                RemoveCard(theCard);
                             }
                             cardSelectList.Clear();
+                            
                         }
+
+                        foreach (GameObject theCard in cardDelteList)
+                        {
+                            theCard.transform.Find("cardMarkDelete").gameObject.SetActive(false);
+                            RemoveCard(theCard);
+                        }
+                        cardDelteList.Clear();
+                        CheckAndDisplayResultMana();
+                        mana = resultMana;
+                        CheckAndDisplayMana();
                     }
                 }
             }
@@ -174,22 +233,7 @@ public class CardGame : MonoBehaviour
                 //see if player clicks on a card
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    if (hit.collider.CompareTag("Card"))
-                    {
-                        foreach (GameObject theCard in cardSelectList)
-                        {
-                            if (hit.collider.gameObject == theCard && theCard.GetComponent<CardObject>().isMarked == true)
-                            {
-                                mana += theCard.gameObject.GetComponent<CardObject>().manaCost;
-                                manaDisplay.text = "Mana: " + mana;
-                                theCard.GetComponent<CardObject>().isMarked = false;
-                                theCard.transform.Find("cardMark").gameObject.SetActive(false);
-                                cardSelectList.Remove(theCard);
-                                break;
-
-                            }
-                        }
-                    }
+                    HandleCardDelete(hit.collider.gameObject);
                 }
             }
         }
@@ -197,15 +241,13 @@ public class CardGame : MonoBehaviour
         //enemy's turn
         else
         {
-            int amountCardMissing = 0;  
+            int amountCardMissing = 0;
             foreach (GameObject theCard in theDeck)
             {
-                if (theCard.GetComponent<CardObject>().isMarked == true)
+                if (theCard.GetComponent<CardObject>().isMarked ||
+                    theCard.GetComponent<CardObject>().isToBeDeleted)
                 {
-                    theCard.GetComponent<CardObject>().isMarked = false;
-                    theCard.transform.Find("cardMark").gameObject.SetActive(false);
-                    mana += theCard.gameObject.GetComponent<CardObject>().manaCost;
-                    cardSelectList.Remove(theCard);
+                    UnselectCard(theCard);
                 }
 
                 if (!theCard.activeSelf)
@@ -243,13 +285,9 @@ public class CardGame : MonoBehaviour
             }
 
             mana += manaRecovery;
-
-            if (mana > manaMaxValue)
-            {
-                mana = manaMaxValue;
-            }
-
-            manaDisplay.text = "Mana: " + mana;
+            CheckAndDisplayMana();
+            resultMana = mana;
+            CheckAndDisplayResultMana();
 
         }
     }
@@ -271,13 +309,48 @@ public class CardGame : MonoBehaviour
             }
         }
 
-        if (cardRepeat == false && mana >= cardObject.gameObject.GetComponent<CardObject>().manaCost)
+        int overAllMana = resultMana;
+        if (cardObject.gameObject.GetComponent<CardObject>().isToBeDeleted)
         {
+            overAllMana -= cardObject.gameObject.GetComponent<CardObject>().manaCost;
+        }
+
+        if (cardRepeat == false && overAllMana >= cardObject.gameObject.GetComponent<CardObject>().manaCost)
+        {
+            UpdateCardStatus(cardObject, true, true, true);
             cardObject.transform.Find("cardMark").gameObject.SetActive(true);
             cardObject.gameObject.GetComponent<CardObject>().isMarked = true;
             cardSelectList.Add(cardObject);
-            mana -= cardObject.gameObject.GetComponent<CardObject>().manaCost;
-            manaDisplay.text = "Mana: " + mana;
+            resultMana -= cardObject.gameObject.GetComponent<CardObject>().manaCost;
+            CheckAndDisplayResultMana();
+        }
+    }
+
+    void HandleCardDelete(GameObject cardObject)
+    {
+        if (gameOver)
+        {
+            return;
+        }
+
+        bool cardRepeat = false;
+        foreach (GameObject theCard in cardDelteList)
+        {
+            if (theCard == cardObject)
+            {
+                cardRepeat = true;
+                break;
+            }
+        }
+
+        if (cardRepeat == false)
+        {
+            UpdateCardStatus(cardObject, false, true, true);
+            cardObject.transform.Find("cardMarkDelete").gameObject.SetActive(true);
+            cardObject.gameObject.GetComponent<CardObject>().isToBeDeleted = true;
+            cardDelteList.Add(cardObject);
+            resultMana += cardObject.gameObject.GetComponent<CardObject>().manaCost;
+            CheckAndDisplayResultMana();
         }
     }
 
@@ -297,4 +370,96 @@ public class CardGame : MonoBehaviour
 
         cardAmountDisplay.text = "Card amount: " + theCardList.Count.ToString();
     }
+
+    void UnselectCard(GameObject theCard)
+    {
+        if (theCard.GetComponent<CardObject>().isMarked)
+        {
+            UpdateCardStatus(theCard, false, true, true);
+            cardSelectList.Remove(theCard);
+        }
+
+        if (theCard.GetComponent<CardObject>().isToBeDeleted)
+        {
+            UpdateCardStatus(theCard, true, true, true);
+            cardDelteList.Remove(theCard);
+        }        
+    }
+
+    void RemoveCard(GameObject theCard)
+    {
+        //trying to find what card of the card is storing theCard, then, if found, disable that deck object to get the 'removed' effect
+        int index = theDeck.FindIndex(a => a == theCard);
+        if (index != -1)
+        {
+            UpdateCardStatus(theCard, true, false, false);
+            UpdateCardStatus(theCard, false, false, false);
+            theDeck[index].gameObject.SetActive(false);
+        }        
+    }
+
+    void UpdateCardStatus(GameObject theCard, bool istoBeMarked, bool extractMana, bool removeFromList)
+    {
+        if (istoBeMarked)
+        {
+            if (theCard.gameObject.GetComponent<CardObject>().isToBeDeleted)
+            {
+                if (extractMana)
+                {
+                    resultMana -= theCard.gameObject.GetComponent<CardObject>().manaCost;
+                    CheckAndDisplayResultMana();
+                }
+
+                theCard.transform.Find("cardMarkDelete").gameObject.SetActive(false);
+                theCard.gameObject.GetComponent<CardObject>().isToBeDeleted = false;
+
+                if (removeFromList)
+                {
+                    cardDelteList.Remove(theCard);
+                }
+                
+            }
+        }
+
+        else
+        {
+            if (theCard.gameObject.GetComponent<CardObject>().isMarked)
+            {
+                if (extractMana)
+                {
+                    resultMana += theCard.gameObject.GetComponent<CardObject>().manaCost;
+                    CheckAndDisplayResultMana();
+                }
+
+                theCard.transform.transform.Find("cardMark").gameObject.SetActive(false);
+                theCard.gameObject.GetComponent<CardObject>().isMarked = false;
+                if (removeFromList)
+                {
+                    cardSelectList.Remove(theCard);
+                }
+                
+            }
+        }
+    }
+
+    void CheckAndDisplayMana()
+    {
+        if (mana > manaMaxValue)
+        {
+            mana = manaMaxValue;
+        }
+
+        if (mana < 0)
+        {
+            mana = 0;
+        }
+
+        manaDisplay.text = "Mana: " + mana;
+    }
+    void CheckAndDisplayResultMana()
+    {
+        resultManaDisplay.text = "Result mana: " + resultMana;
+    }
 }
+
+
