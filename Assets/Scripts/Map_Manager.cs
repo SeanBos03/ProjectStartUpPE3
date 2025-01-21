@@ -1,32 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static Room;
 
 public class MapManager : MonoBehaviour
 {
     public GameObject[] roomPrefabs; // Array of prefabs (Battle, Shop, etc.)
-    public Transform mapParent; // Parent object to hold all rooms
-    public int maxShops = 1; // Maximum number of shops
     public GameObject bossRoomPrefab; // Boss Room Prefab
+    public Transform mapParent; // Parent object to hold all rooms
 
     [Header("Map Settings")]
-    public Vector2[] roomPositions = {
-        new Vector2(0, 0),
-        new Vector2(2, 0),
-        new Vector2(4, 0),
-        new Vector2(2, -2),
-        new Vector2(1, 1),
-    };
+    public int totalRooms = 10; // Total number of rooms in the map
+    public float branchProbability = 0.4f; // Probability of branching for a new room
+    public float roomSpacing = 3f; // Minimum space between rooms
+    public float maxRoomOffset = 2f; // Maximum horizontal/vertical offset to ensure varied room placement
 
-    public int[,] connections = {
-        { 0, 1, 0, 0, 0 }, // Room 1 connected to Room 2
-        { 1, 0, 1, 1, 0 }, // Room 2 connected to Room 1, 3, 4
-        { 0, 1, 0, 0, 1 }, // Room 3 connected to Room 2, 5
-        { 0, 1, 0, 0, 1 }, // Room 4 connected to Room 2, 5
-        { 0, 0, 1, 1, 0 }, // Room 5 connected to Room 3, 4
-    };
-
-    private GameObject[] rooms; // Keep track of instantiated rooms
+    private List<Room> rooms; // List of all the rooms
+    private List<List<Room>> activePaths; // List of active paths (branches)
+    private Room startRoom; // Start room
+    private Room bossRoom; // Boss room
 
     void Start()
     {
@@ -35,7 +25,7 @@ public class MapManager : MonoBehaviour
 
     void CustomizeRoom(GameObject room, Room.RoomType roomType)
     {
-        // Customize room appearance based on type
+        // Customize room appearance based on room type
         var spriteRenderer = room.GetComponent<SpriteRenderer>();
         if (spriteRenderer == null) return;
 
@@ -55,65 +45,185 @@ public class MapManager : MonoBehaviour
 
     void GenerateMap()
     {
-        rooms = new GameObject[roomPositions.Length];
-        int shopCount = 0;
+        rooms = new List<Room>();
+        activePaths = new List<List<Room>>();
 
-        for (int i = 0; i < roomPositions.Length; i++)
+        // Start with the first room
+        List<Room> startPath = new List<Room>();
+        Vector2 lastRoomPosition = Vector2.zero;
+        startRoom = CreateRoom(Room.RoomType.Battle, lastRoomPosition);
+        startPath.Add(startRoom);
+        rooms.Add(startRoom);
+        activePaths.Add(startPath);
+
+        // Generate the rest of the rooms, adding branches
+        for (int i = 1; i < totalRooms - 1; i++) // Last room is always Boss, no need to generate it yet
         {
-            Room.RoomType roomType = Room.RoomType.Battle;
+            // Randomly choose a path (one of the active paths)
+            List<Room> currentPath = activePaths[Random.Range(0, activePaths.Count)];
 
-            // Set room type
-            if (i == roomPositions.Length - 1) // Last room is always Boss
+            // Randomly choose a room type
+            Room.RoomType roomType = GetRandomRoomType(i);
+
+            // Get position for the new room, creating some variation in direction
+            Vector2 newRoomPosition = GetNewRoomPosition(currentPath);
+
+            // Ensure the room doesn't overlap with other rooms in the current path
+            newRoomPosition = FindValidPosition(newRoomPosition, currentPath);
+
+            // Create and place the new room
+            Room newRoom = CreateRoom(roomType, newRoomPosition);
+            rooms.Add(newRoom);
+
+            // Connect the new room to the last room in the current path
+            ConnectRooms(currentPath[currentPath.Count - 1], newRoom);
+            currentPath.Add(newRoom);
+
+            // Decide if we should branch off from this path
+            if (Random.value < branchProbability)
             {
-                roomType = Room.RoomType.Boss;
+                // Create a branch off the current path
+                List<Room> branchPath = new List<Room>();
+                Room branchRoom = CreateRoom(roomType, newRoomPosition + new Vector2(Random.Range(-maxRoomOffset, maxRoomOffset), Random.Range(-maxRoomOffset, maxRoomOffset)));
+                rooms.Add(branchRoom);
+                ConnectRooms(newRoom, branchRoom);
+                branchPath.Add(branchRoom);
+                activePaths.Add(branchPath); // Add the new branch to active paths
             }
-            else if (shopCount < maxShops && Random.value > 0.7f) // Random chance for Shop
-            {
-                roomType = Room.RoomType.Shop;
-                shopCount++;
-            }
-
-            // Instantiate the appropriate prefab
-            GameObject prefabToInstantiate = (roomType == Room.RoomType.Boss) ? bossRoomPrefab : roomPrefabs[Random.Range(0, roomPrefabs.Length)];
-            GameObject roomObject = Instantiate(prefabToInstantiate, roomPositions[i], Quaternion.identity, mapParent);
-
-            // Assign properties to Room component
-            Room roomScript = roomObject.GetComponent<Room>();
-
-            roomScript.roomType = roomType;
-            roomScript.position = roomPositions[i];
-
-            rooms[i] = roomObject;
-
-            // Customize the room's appearance
-            CustomizeRoom(roomObject, roomType);
         }
 
-        // Connect rooms
-        for (int i = 0; i < roomPositions.Length; i++)
-        {
-            Room roomScript = rooms[i].GetComponent<Room>();
-            List<Room> connectedRoomList = new List<Room>();
+        // Final Boss room
+        bossRoom = CreateRoom(Room.RoomType.Boss, activePaths[0][activePaths[0].Count - 1].position + new Vector2(3, 0));
+        rooms.Add(bossRoom);
+        //activePaths[0].Add(bossRoom);
 
-            for (int j = 0; j < roomPositions.Length; j++)
+        // Connect the last room (Boss) to the previous room
+       // ConnectRooms(activePaths[0][activePaths[0].Count - 2], bossRoom);
+
+        // Ensure the Boss room has at least one path leading to it
+        EnsureBossRoomConnection();
+
+        // Debugging output
+        Debug.Log("Map Generated with rooms: " + rooms.Count);
+    }
+
+    Room CreateRoom(Room.RoomType roomType, Vector2 position)
+    {
+        GameObject roomPrefab = GetRoomPrefab(roomType);
+        GameObject roomObject = Instantiate(roomPrefab, position, Quaternion.identity, mapParent);
+        Room roomScript = roomObject.GetComponent<Room>();
+
+        roomScript.roomType = roomType;
+        roomScript.position = position;
+
+        // Customize the room based on type
+        CustomizeRoom(roomObject, roomType);
+
+        return roomScript;
+    }
+
+    GameObject GetRoomPrefab(Room.RoomType roomType)
+    {
+        switch (roomType)
+        {
+            case Room.RoomType.Boss:
+                return bossRoomPrefab;
+            default:
+                return roomPrefabs[Random.Range(0, roomPrefabs.Length)];
+        }
+    }
+
+    Room.RoomType GetRandomRoomType(int index)
+    {
+        // Randomly pick a room type, but ensure the last room is always the Boss
+        if (index == totalRooms - 1)
+        {
+            return Room.RoomType.Boss;
+        }
+        else if (Random.value < 0.3f)
+        {
+            return Room.RoomType.Shop;
+        }
+        else
+        {
+            return Room.RoomType.Battle;
+        }
+    }
+
+    void ConnectRooms(Room roomA, Room roomB)
+    {
+        // Connect two rooms bidirectionally
+        roomA.connectedRooms = AddToArray(roomA.connectedRooms, roomB);
+        roomB.connectedRooms = AddToArray(roomB.connectedRooms, roomA);
+    }
+
+    Room[] AddToArray(Room[] array, Room item)
+    {
+        List<Room> list = new List<Room>(array);
+        list.Add(item);
+        return list.ToArray();
+    }
+
+    Vector2 GetNewRoomPosition(List<Room> currentPath)
+    {
+        // Create variation by adding small random offsets
+        Room lastRoom = currentPath[currentPath.Count - 1];
+        Vector2 lastRoomPosition = lastRoom.position;
+        return lastRoomPosition + new Vector2(2, Random.Range(-1f, 1f)); // slight vertical variation
+    }
+
+    Vector2 FindValidPosition(Vector2 desiredPosition, List<Room> currentPath)
+    {
+        // Try different positions until we find one that doesn't overlap with other rooms in the current path
+        Vector2 offset = Vector2.zero;
+        int maxAttempts = 50;
+
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            bool isValid = true;
+
+            // Only check for collisions with rooms in the current path
+            foreach (Room room in currentPath)
             {
-                if (connections[i, j] == 1)
+                if (Vector2.Distance(room.position, desiredPosition + offset) < roomSpacing)
                 {
-                    connectedRoomList.Add(rooms[j].GetComponent<Room>());
+                    isValid = false;
+                    break;
                 }
             }
-            roomScript.connectedRooms = connectedRoomList.ToArray();
-        }
 
-        // Final Debugging to ensure no duplicate shops
-        int totalShops = 0;
-        foreach (var room in rooms)
-        {
-            if (room.GetComponent<Room>().roomType == Room.RoomType.Shop)
+            if (isValid)
             {
-                totalShops++;
+                return desiredPosition + offset;
+            }
+            else
+            {
+                offset = new Vector2(Random.Range(-maxRoomOffset, maxRoomOffset), Random.Range(-maxRoomOffset, maxRoomOffset)); // Add small random offset
             }
         }
-        Debug.Log($"Total Shops Generated: {totalShops}");
+
+        // If no valid position found, return the original position
+        return desiredPosition;
+    }
+
+    // Ensure the Boss room is connected and not a dead-end
+    void EnsureBossRoomConnection()
+    {
+
+        foreach( List<Room> path in activePaths)
+        {
+            Room lastRoom = path[path.Count - 1];
+         
+            ConnectRooms(lastRoom, bossRoom);
+        }
+        /*
+        // Find a room that's connected to the boss room, if it's not connected to any, create a path to it
+        if (bossRoom.connectedRooms.Length == 0)
+        {
+            // Pick a random room and connect it to the boss room
+            Room randomRoom = rooms[Random.Range(0, rooms.Count)];
+            ConnectRooms(randomRoom, bossRoom);
+        }
+        */
     }
 }
