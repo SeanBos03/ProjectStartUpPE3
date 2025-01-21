@@ -12,6 +12,7 @@ public class CardGame : MonoBehaviour
     [SerializeField] int manaRecovery = 1;
     List<GameObject> cardSelectList = new List<GameObject>(); //list of marked/selected cards
     List<GameObject> cardDelteList = new List<GameObject>(); //list of to be deleted cards
+    List<String> elementList = new List<String>(); //list of elements
     [SerializeField] List<GameObject> theCardSetterList = new List<GameObject>();
     List<GameObject> theCardList = new List<GameObject>(); //list of cards the deck can draw from
 
@@ -48,6 +49,24 @@ public class CardGame : MonoBehaviour
             for (int i = 1; i <= theCardObject.amountGenerate; i++)
             {
                 theCardList.Add(theCardSetter);
+            }
+
+            //generate list of unique elements
+            if (theCardObject.theType.Contains("Element_"))
+            {
+                bool elementRepeat = false;
+                foreach (String element in elementList)
+                {
+                    if (theCardObject.theType == element)
+                    {
+                        elementRepeat = true;
+                    }
+                }
+
+                if (!elementRepeat)
+                {
+                    elementList.Add(theCardObject.theType);
+                }
             }
         }
     }
@@ -149,7 +168,39 @@ public class CardGame : MonoBehaviour
                     //confirm button click
                     if (hit.collider.gameObject.name == "ConfirmButton")
                     {
-                        
+                        int amountElement = 0;
+
+                        List<String> elementListCompare = new List<String>();
+
+                        //copy the values of elementList to elementListCompare. So modifying elementListCompare wont modify elementList
+                        foreach (String element in elementList)
+                        {
+                            elementListCompare.Add((string)element.Clone());
+                        }
+
+                        foreach (GameObject theCard in cardSelectList)
+                        {
+                            foreach (String element in elementListCompare)
+                            {
+                                if (theCard.GetComponent<CardObject>().theType == element)
+                                {
+                                    amountElement++;
+                                    elementListCompare.Remove(element);
+                                    break;
+                                }
+                            }
+
+                            if (amountElement > 2)
+                            {
+                                foreach (String element in elementList)
+                                {
+                                    Debug.Log(element);
+                                }
+                                return;
+                            }
+                        }
+
+
 
                         if (resultMana < 0)
                         {
