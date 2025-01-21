@@ -25,7 +25,7 @@ public class Room : MonoBehaviour
             if (connectedRoom != null)
             {
                 // Instantiate a new line object
-                GameObject lineObject = Instantiate(linePrefab, transform.position, Quaternion.identity);
+                GameObject lineObject = Instantiate(linePrefab, transform.position, Quaternion.identity, transform);
                 LineRenderer lineRenderer = lineObject.GetComponent<LineRenderer>();
 
                 // Set the start and end points of the line
@@ -41,11 +41,13 @@ public class Room : MonoBehaviour
         if (isLocked == false)
         {
             Debug.Log($"Entered {roomType} room at position {position}");
+            MapManager.instance.mapParent.gameObject.SetActive(false);
+            MapManager.instance.activeRoom = this;
 
             switch (roomType)
             {
                 case RoomType.Battle:
-                    SceneManager.LoadScene("TheScene");
+                    SceneManager.LoadScene("TestScene");
                     break;
                 case RoomType.Shop:
                     SceneManager.LoadScene("ShopScene");

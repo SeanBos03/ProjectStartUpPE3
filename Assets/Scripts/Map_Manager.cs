@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static Room;
 
@@ -8,6 +9,8 @@ public class MapManager : MonoBehaviour
     public GameObject bossRoomPrefab; // Boss Room prefab
     public GameObject startRoomPrefab; // Start Room prefab
     public Transform mapParent; // Parent object to hold all rooms
+    public static MapManager instance;
+    
 
     [Header("Map Settings")]
     public int totalPillars = 5; // Number of vertical pillars
@@ -17,13 +20,44 @@ public class MapManager : MonoBehaviour
     public float verticalSpacing = 3f; // Vertical spacing between rooms within a pillar
     public Vector2 mapMinBounds; // Minimum bounds of the map
     public Vector2 mapMaxBounds; // Maximum bounds of the map
-
+    private List<Room> lockedRoom = new List<Room>();
+    [HideInInspector]public Room activeRoom;
     private List<Room> rooms; // List of all generated rooms
+    public float shopSpawnChance = 0.3f;
+    public float currentShopAmount = 0f;
+    public float maxShopAmount = 3f;
+    public float maxRoomThreshold = 5f;
+
+
 
     void Start()
     {
+        if (instance != null && instance != this) 
+        {
+            instance.UpdateLockedRooms();
+            instance.mapParent.gameObject.SetActive(true);
+            Destroy(gameObject);
+            return;
+        }
         GenerateMap();
+        DontDestroyOnLoad(gameObject);
+        instance = this;
     }
+    public void UpdateLockedRooms()
+    {
+        foreach (Room room in lockedRoom) 
+        {
+            room.isLocked = true;   
+        }
+        lockedRoom = new List<Room>();  
+        foreach (Room room in activeRoom.connectedRooms)
+        {
+            lockedRoom.Add(room);
+            room.isLocked = false;
+        }
+    }
+
+    
 
     void GenerateMap()
     {
@@ -46,7 +80,7 @@ public class MapManager : MonoBehaviour
             float pillarX = mapMinBounds.x + pillarIndex * pillarSpacing;
 
             // Generate a random number of rooms for this pillar
-            int roomCount = Random.Range(minRoomsPerPillar, maxRoomsPerPillar + 1);
+            int roomCount = PillarAmount();
 
             // Create rooms along the y-axis for this pillar
             for (int roomIndex = 0; roomIndex < roomCount; roomIndex++)
@@ -56,6 +90,8 @@ public class MapManager : MonoBehaviour
 
                 // Randomly choose a room type
                 Room.RoomType roomType = GetRandomRoomType();
+
+
                 foreach (GameObject Room in roomPrefabs)
                 {
                     if (Room.GetComponent<Room>().roomType == roomType)
@@ -66,6 +102,7 @@ public class MapManager : MonoBehaviour
                         rooms.Add(newRoom);
                         currentRow.Add(newRoom);
                         while (true)
+
                         {
                             if(rowStash.Count - 1 >= currentIndex)
                             {
@@ -124,12 +161,36 @@ public class MapManager : MonoBehaviour
     Room.RoomType GetRandomRoomType()
     {
         // Randomly pick a room type (excluding None and Boss)
-        if (Random.value < 0.3f)
+        if (Random.value < shopSpawnChance && currentShopAmount < maxShopAmount)
         {
+            shopSpawnChance *= 0.5f;
+            currentShopAmount++;
             return Room.RoomType.Shop;
         }
+        shopSpawnChance *= 1.5f;
         return Room.RoomType.Battle;
     }
+
+    public int PillarAmount()
+    {
+        float calculationNumber = Random.Range(0, 10);
+        if (calculationNumber < maxRoomThreshold)
+        {
+            maxRoomThreshold *= 0.5f;
+            return 1;
+        }
+        else if (calculationNumber < maxRoomThreshold * 2)
+        {
+            return 2;
+        }
+        else 
+        {
+            maxRoomThreshold *= 1.5f;
+            return 3;
+        }
+
+    }
+
 
     void CustomizeRoom(GameObject room, Room.RoomType roomType)
     {
