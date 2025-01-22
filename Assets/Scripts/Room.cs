@@ -70,7 +70,7 @@ public class Room : MonoBehaviour
             switch (roomType)
             {
                 case RoomType.Battle:
-                    SceneManager.LoadScene("TestScene");
+                    SceneManager.LoadScene("TheScene");
                     isLocked = true;
                     break;
                 case RoomType.Shop:
