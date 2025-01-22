@@ -145,7 +145,7 @@ public class CardGame : MonoBehaviour
                             {
                                 if (hit.collider.gameObject == theCard)
                                 {
-                                    resultMana -= theCard.gameObject.GetComponent<CardObject>().manaCost;
+                                    resultMana -= theCard.gameObject.GetComponent<CardObject>().manaDiscardValue;
                                     CheckAndDisplayResultMana();
                                     theCard.GetComponent<CardObject>().isToBeDeleted = false;
                                     theCard.transform.Find("cardMarkDelete").gameObject.SetActive(false);
@@ -437,7 +437,7 @@ public class CardGame : MonoBehaviour
             cardObject.transform.Find("cardMarkDelete").gameObject.SetActive(true);
             cardObject.gameObject.GetComponent<CardObject>().isToBeDeleted = true;
             cardDelteList.Add(cardObject);
-            resultMana += cardObject.gameObject.GetComponent<CardObject>().manaCost;
+            resultMana += cardObject.gameObject.GetComponent<CardObject>().manaDiscardValue;
             CheckAndDisplayResultMana();
         }
     }
@@ -482,11 +482,12 @@ public class CardGame : MonoBehaviour
         {
             UpdateCardStatus(theCard, true, false, false);
             UpdateCardStatus(theCard, false, false, false);
+
             theDeck[index].gameObject.SetActive(false);
         }        
     }
 
-    void UpdateCardStatus(GameObject theCard, bool istoBeMarked, bool extractMana, bool removeFromList)
+    void UpdateCardStatus(GameObject theCard, bool istoBeMarked, bool extractMana, bool removeFromList, bool useCardDiscardCost=false)
     {
         if (istoBeMarked)
         {
@@ -494,7 +495,16 @@ public class CardGame : MonoBehaviour
             {
                 if (extractMana)
                 {
-                    resultMana -= theCard.gameObject.GetComponent<CardObject>().manaCost;
+                    if (useCardDiscardCost)
+                    {
+                        resultMana -= theCard.gameObject.GetComponent<CardObject>().manaDiscardValue;
+                    }
+
+                    else
+                    {
+                        resultMana -= theCard.gameObject.GetComponent<CardObject>().manaCost;
+                    }
+                    
                     CheckAndDisplayResultMana();
                 }
 
@@ -515,7 +525,16 @@ public class CardGame : MonoBehaviour
             {
                 if (extractMana)
                 {
-                    resultMana += theCard.gameObject.GetComponent<CardObject>().manaCost;
+                    if (useCardDiscardCost)
+                    {
+                        resultMana += theCard.gameObject.GetComponent<CardObject>().manaDiscardValue;
+                    }
+
+                    else
+                    {
+                        resultMana += theCard.gameObject.GetComponent<CardObject>().manaCost;
+                    }
+                    
                     CheckAndDisplayResultMana();
                 }
 

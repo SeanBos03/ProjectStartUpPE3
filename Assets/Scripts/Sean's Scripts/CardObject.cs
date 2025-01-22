@@ -5,6 +5,7 @@ using TMPro;
 
 public class CardObject : MonoBehaviour
 {
+    public int manaDiscardValue = 2;
     public int manaCost = 2;
     [HideInInspector] public bool isMarked;
     [HideInInspector] public bool isToBeDeleted;
@@ -20,6 +21,7 @@ public class CardObject : MonoBehaviour
     {
         theType = other.theType;
         manaCost = other.manaCost;
+        manaDiscardValue = other.manaDiscardValue;
         if (theType.Contains("Multiplier"))
         {
             this.transform.Find("Canvas").gameObject.SetActive(true);
