@@ -35,6 +35,28 @@ public class Room : MonoBehaviour
             }
         }
     }
+    public void OnMouseEnter()
+    {
+        if (!isLocked)
+        { 
+            GetComponent<MeshRenderer>().material.color = Color.green;
+            Debug.Log ("GREEN");
+        }
+
+        return;
+    }
+
+    public void OnMouseExit()
+    {
+        if (!isLocked)
+        {
+            GetComponent<MeshRenderer>().material.color = Color.white;
+            Debug.Log("WHITE");
+        }
+
+        return;
+    }
+
 
     private void OnMouseDown()
     {
@@ -43,21 +65,26 @@ public class Room : MonoBehaviour
             Debug.Log($"Entered {roomType} room at position {position}");
             MapManager.instance.mapParent.gameObject.SetActive(false);
             MapManager.instance.activeRoom = this;
+            OnMouseExit();
 
             switch (roomType)
             {
                 case RoomType.Battle:
                     SceneManager.LoadScene("TestScene");
+                    isLocked = true;
                     break;
                 case RoomType.Shop:
                     SceneManager.LoadScene("ShopScene");
+                    isLocked = true;
                     break;
                 case RoomType.Boss:
                     SceneManager.LoadScene("BossRoom");
+                    isLocked = true;
                     break;
                 default:
                     Debug.LogError($"Room at position {position} has an invalid or unassigned RoomType!");
                     break;
+                    
             }
         }
         else if (isLocked == true)
