@@ -6,6 +6,7 @@ using System;
 using Unity.VisualScripting;
 using Unity.Burst.CompilerServices;
 using UnityEngine.Assertions.Must;
+using UnityEngine.SceneManagement;
 public class CardGame : MonoBehaviour
 {
     [SerializeField] int synergyBonusValue = 2;
@@ -103,6 +104,7 @@ public class CardGame : MonoBehaviour
 
         if (gameOver)
         {
+            SceneManager.LoadScene("MainMenu");
             return;
         }
 
@@ -248,14 +250,25 @@ public class CardGame : MonoBehaviour
 
                             if (uniqueElementCardList.Count > 1)
                             {
-                                if (uniqueElementCardList[0].GetComponent<CardObject>().synergizeType == uniqueElementCardList[1].GetComponent<CardObject>().theType
-                                || uniqueElementCardList[1].GetComponent<CardObject>().synergizeType == uniqueElementCardList[0].GetComponent<CardObject>().theType)
+                                GameData.Combo combo = new GameData.Combo();
+                                combo.ingredient1 = uniqueElementCardList[0].GetComponent<CardObject>().theType;
+                                combo.ingredient2 = uniqueElementCardList[1].GetComponent<CardObject>().theType;
+                                bool foundCombo = false;
+                                foreach (GameData.Combo learnedCombo in GameData.learnedCombos)
+                                {
+                                    if (combo.CheckComboMatched(learnedCombo))
+                                    {
+                                        foundCombo = true;
+                                        break;
+                                    }
+                                }
+                                if (foundCombo)
                                 {
                                     theNumber += (amountOfElements * synergyBonusValue);
                                 }
+
                             }
                             
-
                             theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber;
                             enemyHealthDisplay.text = "Enemy: " + theEnemy.GetComponent<CharacterObject>().theHealth.ToString();
                             Debug.Log("Player deals: " + theNumber);
