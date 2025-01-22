@@ -204,7 +204,11 @@ public class CardGame : MonoBehaviour
 
                         if (amountElement == 0)
                         {
-                            return;
+                            if (cardDelteList.Count == 0)
+                            {
+                                return;
+                            }
+                            
                         }
 
                         if (resultMana < 0)
