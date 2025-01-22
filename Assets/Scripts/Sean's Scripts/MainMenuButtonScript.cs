@@ -7,7 +7,7 @@ public class MainMenuButtonScript : MonoBehaviour
 {
     public void GoToGame()
     {
-        SceneManager.LoadScene("TheScene");
+        SceneManager.LoadScene("Chapter 1 Map");
     }
     public void PrintMessage()
     {

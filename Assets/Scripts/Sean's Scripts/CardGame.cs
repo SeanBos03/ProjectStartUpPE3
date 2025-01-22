@@ -82,6 +82,7 @@ public class CardGame : MonoBehaviour
         if (theCardList.Count < theDeck.Count)
         {
             Debug.Log("No card left!");
+            SceneManager.LoadScene("MainMenu");
             gameOver = true;
             yield break;
         }
@@ -104,7 +105,6 @@ public class CardGame : MonoBehaviour
 
         if (gameOver)
         {
-            SceneManager.LoadScene("MainMenu");
             return;
         }
 
@@ -277,6 +277,7 @@ public class CardGame : MonoBehaviour
                             if (theEnemy.GetComponent<CharacterObject>().theHealth <= 0)
                             {
                                 gameOver = true;
+                                SceneManager.LoadScene("Chapter 1 Map");
                                 Debug.Log("Player won");
                             }
 
@@ -350,12 +351,14 @@ public class CardGame : MonoBehaviour
             {
                 gameOver = true;
                 Debug.Log("Enemy won");
+                SceneManager.LoadScene("MainMenu");
                 return;
             }
 
             if (theCardList.Count < amountCardMissing)
             {
                 Debug.Log("No card left!");
+                SceneManager.LoadScene("MainMenu");
                 gameOver = true;
                 return;
             }
