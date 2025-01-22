@@ -6,6 +6,7 @@ using System;
 using Unity.VisualScripting;
 using Unity.Burst.CompilerServices;
 using UnityEngine.Assertions.Must;
+using UnityEngine.SceneManagement;
 public class CardGame : MonoBehaviour
 {
     [SerializeField] int synergyBonusValue = 2;
@@ -81,6 +82,7 @@ public class CardGame : MonoBehaviour
         if (theCardList.Count < theDeck.Count)
         {
             Debug.Log("No card left!");
+            SceneManager.LoadScene("MainMenu");
             gameOver = true;
             yield break;
         }
@@ -248,14 +250,25 @@ public class CardGame : MonoBehaviour
 
                             if (uniqueElementCardList.Count > 1)
                             {
-                                if (uniqueElementCardList[0].GetComponent<CardObject>().synergizeType == uniqueElementCardList[1].GetComponent<CardObject>().theType
-                                || uniqueElementCardList[1].GetComponent<CardObject>().synergizeType == uniqueElementCardList[0].GetComponent<CardObject>().theType)
+                                GameData.Combo combo = new GameData.Combo();
+                                combo.ingredient1 = uniqueElementCardList[0].GetComponent<CardObject>().theType;
+                                combo.ingredient2 = uniqueElementCardList[1].GetComponent<CardObject>().theType;
+                                bool foundCombo = false;
+                                foreach (GameData.Combo learnedCombo in GameData.learnedCombos)
+                                {
+                                    if (combo.CheckComboMatched(learnedCombo))
+                                    {
+                                        foundCombo = true;
+                                        break;
+                                    }
+                                }
+                                if (foundCombo)
                                 {
                                     theNumber += (amountOfElements * synergyBonusValue);
                                 }
+
                             }
                             
-
                             theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber;
                             enemyHealthDisplay.text = "Enemy: " + theEnemy.GetComponent<CharacterObject>().theHealth.ToString();
                             Debug.Log("Player deals: " + theNumber);
@@ -264,6 +277,7 @@ public class CardGame : MonoBehaviour
                             if (theEnemy.GetComponent<CharacterObject>().theHealth <= 0)
                             {
                                 gameOver = true;
+                                SceneManager.LoadScene("Chapter 1 Map");
                                 Debug.Log("Player won");
                             }
 
@@ -337,12 +351,14 @@ public class CardGame : MonoBehaviour
             {
                 gameOver = true;
                 Debug.Log("Enemy won");
+                SceneManager.LoadScene("MainMenu");
                 return;
             }
 
             if (theCardList.Count < amountCardMissing)
             {
                 Debug.Log("No card left!");
+                SceneManager.LoadScene("MainMenu");
                 gameOver = true;
                 return;
             }

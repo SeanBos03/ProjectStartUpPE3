@@ -11,7 +11,6 @@ public class CardObject : MonoBehaviour
     public int amountGenerate;
     public int theValue;
     public string theType;
-    public string synergizeType;
     public int multiplierNumber; //an ability card applies mulitplier to element card increasing the value
     void Start()
     {
@@ -20,7 +19,6 @@ public class CardObject : MonoBehaviour
     public void ChangeCard(CardObject other)
     {
         theType = other.theType;
-        synergizeType = other.synergizeType;
         manaCost = other.manaCost;
         if (theType.Contains("Multiplier"))
         {
