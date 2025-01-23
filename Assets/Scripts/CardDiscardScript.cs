@@ -47,6 +47,7 @@ public class CardDiscardScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         StartCoroutine(MoveUsingCurve(this.transform.position, Discard_Pile.position, 0.5f, CardDiscard[0]));
     }
 }
