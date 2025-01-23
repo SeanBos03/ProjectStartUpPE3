@@ -12,6 +12,13 @@ public class ComboCreateScript : MonoBehaviour
 
     void Start()
     {
+        if (comboCreated)
+        {
+            return;
+        }
+
+        comboCreated = true;
+
         if (starterComboIngredient1.Count != starterComboIngredient2.Count)
         {
             Debug.Log("Invalid data - starterCombo");
