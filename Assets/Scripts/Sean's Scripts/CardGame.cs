@@ -9,13 +9,13 @@ using UnityEngine.Assertions.Must;
 using UnityEngine.SceneManagement;
 public class CardGame : MonoBehaviour
 {
-    [SerializeField] int synergyBonusValue = 2;
+    [SerializeField] int comboBonusValue = 2;
     [SerializeField] int mana = 10;
     [SerializeField] int manaMaxValue = 10;
     [SerializeField] int manaRecovery = 1;
     List<GameObject> cardSelectList = new List<GameObject>(); //list of marked/selected cards
     List<GameObject> cardDelteList = new List<GameObject>(); //list of to be deleted cards
-    List<String> elementList = new List<String>(); //list of elements
+    
     [SerializeField] List<GameObject> theCardSetterList = new List<GameObject>();
     List<GameObject> theCardList = new List<GameObject>(); //list of cards the deck can draw from
 
@@ -58,7 +58,7 @@ public class CardGame : MonoBehaviour
             if (theCardObject.theType.Contains("Element_"))
             {
                 bool elementRepeat = false;
-                foreach (String element in elementList)
+                foreach (String element in GameData.elementList)
                 {
                     if (theCardObject.theType == element)
                     {
@@ -68,7 +68,7 @@ public class CardGame : MonoBehaviour
 
                 if (!elementRepeat)
                 {
-                    elementList.Add(theCardObject.theType);
+                    GameData.elementList.Add(theCardObject.theType);
                 }
             }
         }
@@ -178,7 +178,7 @@ public class CardGame : MonoBehaviour
                         List<GameObject> uniqueElementCardList = new List<GameObject>();
 
                         //copy the values of elementList to elementListCompare. So modifying elementListCompare wont modify elementList
-                        foreach (String element in elementList)
+                        foreach (String element in GameData.elementList)
                         {
                             elementListCompare.Add((string)element.Clone());
                         }
@@ -258,7 +258,7 @@ public class CardGame : MonoBehaviour
                                 combo.ingredient1 = uniqueElementCardList[0].GetComponent<CardObject>().theType;
                                 combo.ingredient2 = uniqueElementCardList[1].GetComponent<CardObject>().theType;
                                 bool foundCombo = false;
-                                foreach (GameData.Combo learnedCombo in GameData.learnedCombos)
+                                foreach (GameData.Combo learnedCombo in GameData.combosKnown)
                                 {
                                     if (combo.CheckComboMatched(learnedCombo))
                                     {
@@ -266,13 +266,30 @@ public class CardGame : MonoBehaviour
                                         break;
                                     }
                                 }
+
                                 if (foundCombo)
                                 {
-                                    theNumber += (amountOfElements * synergyBonusValue);
+                                    theNumber += (amountOfElements * comboBonusValue);
+                                }
+                            }
+
+                            foreach (GameData.Mixture theMixure in GameData.mixturesKnown)
+                            {
+                                GameData.Mixture checkMixture = new GameData.Mixture();
+                                checkMixture.theElements = new List<string>();
+                                foreach (GameObject theCard in cardSelectList)
+                                {
+                                    checkMixture.theElements.Add(theCard.GetComponent<CardObject>().theType);
                                 }
 
+                                //mixture matched
+                                if (checkMixture.CheckMixtureMatched(theMixure))
+                                {
+                                    theNumber += theMixure.value;
+                                    break;
+                                }
                             }
-                            
+
                             theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber;
                             enemyHealthDisplay.text = "Enemy: " + theEnemy.GetComponent<CharacterObject>().theHealth.ToString();
                             Debug.Log("Player deals: " + theNumber);
@@ -290,7 +307,6 @@ public class CardGame : MonoBehaviour
                                 RemoveCard(theCard);
                             }
                             cardSelectList.Clear();
-                            
                         }
 
                         if (resultMana > manaMaxValue)
