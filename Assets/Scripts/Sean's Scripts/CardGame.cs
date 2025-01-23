@@ -34,6 +34,8 @@ public class CardGame : MonoBehaviour
     bool gameOver;
     int resultMana;
 
+    bool isMaking;
+
     public LayerMask ignoreLayer;  // Reference to the layer that ray ignore
     void Start()
     {
@@ -86,7 +88,6 @@ public class CardGame : MonoBehaviour
             gameOver = true;
             yield break;
         }
-
 
         foreach (GameObject theCard in theDeck)
         {
@@ -149,7 +150,6 @@ public class CardGame : MonoBehaviour
                                     CheckAndDisplayResultMana();
                                     theCard.GetComponent<CardObject>().isToBeDeleted = false;
                                     theCard.transform.Find("cardMarkDelete").gameObject.SetActive(false);
-                                    cardDelteList.Remove(theCard);
                                     break;
                                 }
                             }
@@ -352,8 +352,10 @@ public class CardGame : MonoBehaviour
                     UnselectCard(theCard);
                 }
 
-                if (!theCard.activeSelf)
+                if (theCard.gameObject.GetComponent<CardObject>().isDeleted)
                 {
+                    theCard.gameObject.GetComponent<SpellManager>().StartMovingBack();
+                    theCard.gameObject.GetComponent<CardObject>().isDeleted = false;
                     amountCardMissing++;
                 }
             }
@@ -498,8 +500,9 @@ public class CardGame : MonoBehaviour
         {
             UpdateCardStatus(theCard, true, false, false);
             UpdateCardStatus(theCard, false, false, false);
-
-            theDeck[index].gameObject.SetActive(false);
+         //   theDeck[index].gameObject.SetActive(false);
+            theCard.gameObject.GetComponent<CardObject>().isDeleted = true;
+            theCard.gameObject.GetComponent<SpellManager>().StartMoving();
         }        
     }
 

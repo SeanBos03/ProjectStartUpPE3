@@ -7,12 +7,10 @@ public class CardDiscardScript : MonoBehaviour
 {
     public Transform Discard_Pile;
     public List<AnimationCurve> CardDiscard;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
+    public float theTime = 0.5f;
+    Vector2 orginalPosition;
+    public bool isMoving;
+    public bool isMovingBack;
     IEnumerator MoveUsingCurve(Vector3 origin, Vector3 Discard_Pile, float duration, AnimationCurve CardDiscard)
     {
         float timePassed = 0f;
@@ -24,6 +22,15 @@ public class CardDiscardScript : MonoBehaviour
             transform.position = Vector3.LerpUnclamped(origin, Discard_Pile, curvePercent);
 
             yield return null;
+        }
+
+        if (isMoving)
+        {
+            isMoving = false;
+        }
+        if (isMovingBack)
+        {
+            isMovingBack = false;
         }
     }
 
@@ -43,10 +50,26 @@ public class CardDiscardScript : MonoBehaviour
         }
     }
 
-
-    // Update is called once per frame
+    public void StartMovingBack()
+    {
+        isMovingBack = true;
+    }
+    public void StartMoving()
+    {
+        orginalPosition = transform.position;
+        isMoving = true;
+    }
     void Update()
     {
-        StartCoroutine(MoveUsingCurve(this.transform.position, Discard_Pile.position, 0.5f, CardDiscard[0]));
+        if (isMoving)
+        {
+            StartCoroutine(MoveUsingCurve(transform.position, Discard_Pile.position, theTime, CardDiscard[0]));
+        }
+
+        if (isMovingBack)
+        {
+            Debug.Log("Move back");
+            StartCoroutine(MoveUsingCurve(transform.position, orginalPosition, theTime, CardDiscard[0]));
+        }
     }
 }

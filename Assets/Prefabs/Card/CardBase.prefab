@@ -118,6 +118,7 @@ GameObject:
   - component: {fileID: 6518422599545666762}
   - component: {fileID: 5171336406576954612}
   - component: {fileID: 8230928351284722008}
+  - component: {fileID: -8988539361595090606}
   m_Layer: 0
   m_Name: CardBase
   m_TagString: Card
@@ -225,12 +226,75 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e409508b945cc84aa4371fa015e3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manaDiscardValue: 2
   manaCost: 2
   isMarked: 0
+  isToBeDeleted: 0
   amountGenerate: 10
   theValue: 1
   theType: Element_Fire
   multiplierNumber: 0
+--- !u!114 &-8988539361595090606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1181276293484201951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52e46297ceca616408fac1d4221cde4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Discard_Pile: {fileID: 0}
+  CardDiscard:
+  - serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  - serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.014331818
+      value: 0.50164795
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.61157227
+      value: -0.025688171
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  theTime: 1
 --- !u!1 &1222975143171336409
 GameObject:
   m_ObjectHideFlags: 0

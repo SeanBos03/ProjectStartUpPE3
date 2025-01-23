@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -7,12 +8,14 @@ public class SpellManager : MonoBehaviour
 {
     public Transform Discard_Pile;
     public List<AnimationCurve> CardDiscard;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public float theTime = 0.5f;
+    public Vector3 originalPosition;
+    public bool isMoving;
+    public bool isMovingBack;
 
+    private void Start()
+    {
+    }
     IEnumerator MoveUsingCurve(Vector3 origin, Vector3 Discard_Pile, float duration, AnimationCurve CardDiscard)
     {
         float timePassed = 0f;
@@ -25,12 +28,22 @@ public class SpellManager : MonoBehaviour
 
             yield return null;
         }
+
+        //if (isMoving)
+        //{
+        //    isMoving = false;
+        //}
+
+        //if (isMovingBack)
+        //{
+        //    isMovingBack = false;
+        //}
     }
 
     IEnumerator MoveUsingThreeCurves(Vector3 origin, Vector3 DiscardPile, float duration, AnimationCurve CardDiscardX, AnimationCurve CardDiscardY, AnimationCurve CardDiscardZ)
     {
         float timePassed = 0f;
-        while(timePassed <= duration)
+        while (timePassed <= duration)
         {
             timePassed = timePassed + Time.deltaTime;
             float percent = Mathf.Clamp01(timePassed / duration);
@@ -39,14 +52,39 @@ public class SpellManager : MonoBehaviour
             float curvePercentZ = CardDiscardZ.Evaluate(percent);
             transform.position = new Vector3(Mathf.LerpUnclamped(origin.x, DiscardPile.x, curvePercentX), Mathf.LerpUnclamped(origin.y, DiscardPile.y, curvePercentY), Mathf.LerpUnclamped(origin.x, DiscardPile.x, curvePercentX));
 
-        yield return null;
+            yield return null;
         }
     }
 
-
-    // Update is called once per frame
+    public void StartMovingBack()
+    {
+        StopAllCoroutines();
+        //isMovingBack = true;
+        //isMoving = false;
+        //StartCoroutine(MoveUsingCurve(transform.position, orginalPosition, theTime, CardDiscard[1]));
+        Debug.Log($"{name} {originalPosition}");
+        transform.DOMove(originalPosition, theTime);
+    }
+    public void StartMoving()
+    {
+        StopAllCoroutines();
+        originalPosition = transform.position;
+        Debug.Log($"{name} {originalPosition}");
+        //isMoving = true;
+        //isMovingBack = false;
+        transform.DOMove(Discard_Pile.position, theTime);
+        //StartCoroutine(MoveUsingCurve(transform.position, Discard_Pile.position, theTime, CardDiscard[0]));
+    }
     void Update()
-    { 
-        StartCoroutine(MoveUsingCurve(this.transform.position, Discard_Pile.position, 0.5f, CardDiscard[0]));
+    {
+        if (isMoving)
+        {
+            //StartCoroutine(MoveUsingCurve(transform.position, Discard_Pile.position, theTime, CardDiscard[0]));
+        }
+
+        if (isMovingBack)
+        {
+            //StartCoroutine(MoveUsingCurve(transform.position, orginalPosition, theTime, CardDiscard[1]));
+        }
     }
 }
