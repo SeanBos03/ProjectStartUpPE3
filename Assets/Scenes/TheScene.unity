@@ -877,7 +877,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c03deb5cd68fa043b5f62864210e64a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  synergyBonusValue: 2
+  comboBonusValue: 2
   mana: 10
   manaMaxValue: 10
   manaRecovery: 1
@@ -2264,64 +2264,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 487303913}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &510436270
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 510436271}
-  - component: {fileID: 510436272}
-  m_Layer: 0
-  m_Name: ComboSetter
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &510436271
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 510436270}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 709.5611, y: 357.8396, z: -287.02017}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &510436272
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 510436270}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ae397c5f0178a94ba4831cb5e428966, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  starterComboIngredient1:
-  - Element_Fire
-  - Element_Grass
-  - Element_Ground
-  - Element_Thunder
-  - Element_Water
-  starterComboIngredient2:
-  - Element_Grass
-  - Element_Ground
-  - Element_Thunder
-  - Element_Water
-  - Element_Fire
-  shopComboIngredient1: []
-  shopComboIngredient2: []
 --- !u!1 &512453405
 GameObject:
   m_ObjectHideFlags: 0
@@ -5710,5 +5652,4 @@ SceneRoots:
   - {fileID: 210869182}
   - {fileID: 650187500}
   - {fileID: 962877445}
-  - {fileID: 510436271}
   - {fileID: 412623958}

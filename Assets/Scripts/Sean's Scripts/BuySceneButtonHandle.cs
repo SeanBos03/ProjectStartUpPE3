@@ -5,14 +5,11 @@ using UnityEngine.UI;
 
 public class BuySceneButtonHandle : MonoBehaviour
 {
-    public BuyComboScript theComboScript;
+    public BuyMixtureScript theMixtureScript;
     public Button button1;
     public Button button2;
-
-    public string button1Ingredient1;
-    public string button1Ingredient2;
-    public string button2Ingredient1;
-    public string button2Ingredient2;
+    public GameData.Mixture button1Mixture;
+    public GameData.Mixture button2Mixture;
 
     void Start()
     {
@@ -22,10 +19,10 @@ public class BuySceneButtonHandle : MonoBehaviour
 
     void ButtonClickButton1()
     {
-        theComboScript.BuyCombo(button1Ingredient1, button1Ingredient2);
+        theMixtureScript.BuyMixture(button1Mixture);
     }
     void ButtonClickButton2()
     {
-        theComboScript.BuyCombo(button2Ingredient1, button2Ingredient2);
+        theMixtureScript.BuyMixture(button2Mixture);
     }
 }
