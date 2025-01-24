@@ -9,6 +9,7 @@ public class CardObject : MonoBehaviour
     public int manaCost = 2;
     [HideInInspector] public bool isMarked;
     [HideInInspector] public bool isToBeDeleted;
+    [HideInInspector] public bool isToBeRefreshed;
     [HideInInspector] public bool isDeleted;
     public int amountGenerate;
     public int theValue;
@@ -23,6 +24,7 @@ public class CardObject : MonoBehaviour
         theType = other.theType;
         manaCost = other.manaCost;
         manaDiscardValue = other.manaDiscardValue;
+        isToBeRefreshed = other.isToBeRefreshed;
         isDeleted = other.isDeleted;
         if (theType.Contains("Multiplier"))
         {

@@ -7,6 +7,8 @@ using Unity.VisualScripting;
 using Unity.Burst.CompilerServices;
 using UnityEngine.Assertions.Must;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System.Security.Cryptography;
 public class CardGame : MonoBehaviour
 {
     [SerializeField] int comboBonusValue = 2;
@@ -30,6 +32,10 @@ public class CardGame : MonoBehaviour
 
     [SerializeField] List<GameObject> theDeck = new List<GameObject>();
 
+    [SerializeField] Slider enemyHealthSlider;
+    [SerializeField] Slider playerHealthSlider;
+    [SerializeField] Slider playerManaSlider;
+
     bool playerTurn = true;
     bool gameOver;
     int resultMana;
@@ -39,12 +45,16 @@ public class CardGame : MonoBehaviour
     public LayerMask ignoreLayer;  // Reference to the layer that ray ignore
     void Start()
     {
+        enemyHealthSlider.maxValue = theEnemy.GetComponent<CharacterObject>().maxHealth;
+        playerHealthSlider.maxValue = thePlayer.GetComponent<CharacterObject>().maxHealth;
+        playerManaSlider.maxValue = manaMaxValue;
         resultMana = mana;
-        manaDisplay.text = "Mana: " + mana;
+        UpdateManaPlayer();
         resultManaDisplay.text = "Result mana: " + resultMana;
         StartCoroutine(RandomizeDeckTimer());
-        playerHealthDisplay.text = "Player: " + thePlayer.GetComponent<CharacterObject>().theHealth.ToString();
-        enemyHealthDisplay.text = "Enemy: " + theEnemy.GetComponent<CharacterObject>().theHealth.ToString();
+        UpdateHealthPlayer();
+        
+        UpdateHealthEnemy();
 
         //generating the list
         foreach (GameObject theCardSetter in theCardSetterList)
@@ -119,6 +129,11 @@ public class CardGame : MonoBehaviour
                 //see if player clicks on a card
                 if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, ~ignoreLayer)) 
                 {
+                    if (hit.collider.gameObject.name == "image_book")
+                    {
+                        Debug.Log("Hit book");
+                    }
+
                     //card object click
                     if (hit.collider.CompareTag("Card"))
                     {
@@ -291,7 +306,8 @@ public class CardGame : MonoBehaviour
                             }
 
                             theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber;
-                            enemyHealthDisplay.text = "Enemy: " + theEnemy.GetComponent<CharacterObject>().theHealth.ToString();
+                            
+                            UpdateHealthEnemy();
                             Debug.Log("Player deals: " + theNumber);
 
                             //game over feature - if enemy got defeated
@@ -304,25 +320,27 @@ public class CardGame : MonoBehaviour
 
                             foreach (GameObject theCard in cardSelectList)
                             {
+                                theCard.GetComponent<CardObject>().isToBeRefreshed = true;
                                 RemoveCard(theCard);
                             }
                             cardSelectList.Clear();
                         }
 
-                        if (resultMana > manaMaxValue)
-                        {
-                            resultMana = manaMaxValue;
-                        }
+                        //if (resultMana > manaMaxValue)
+                        //{
+                        //    resultMana = manaMaxValue;
+                        //}
 
                         foreach (GameObject theCard in cardDelteList)
                         {
+                            theCard.GetComponent<CardObject>().isToBeRefreshed = true;
                             theCard.transform.Find("cardMarkDelete").gameObject.SetActive(false);
                             RemoveCard(theCard);
                         }
                         cardDelteList.Clear();
                         CheckAndDisplayResultMana();
                         mana = resultMana;
-                        CheckAndDisplayMana();
+                        CheckAndDisplayMana(false);
                     }
                 }
             }
@@ -355,7 +373,6 @@ public class CardGame : MonoBehaviour
                 if (theCard.gameObject.GetComponent<CardObject>().isDeleted)
                 {
                     theCard.gameObject.GetComponent<SpellManager>().StartMovingBack();
-                    theCard.gameObject.GetComponent<CardObject>().isDeleted = false;
                     amountCardMissing++;
                 }
             }
@@ -364,7 +381,7 @@ public class CardGame : MonoBehaviour
             int theNumber;
             theNumber = UnityEngine.Random.Range(2, 21);
             thePlayer.GetComponent<CharacterObject>().theHealth -= theNumber;
-            playerHealthDisplay.text = "Player: " + thePlayer.GetComponent<CharacterObject>().theHealth.ToString();
+            UpdateHealthPlayer();
             playerTurn = true;
 
             Debug.Log("Enemy deals: " +  theNumber);
@@ -391,7 +408,7 @@ public class CardGame : MonoBehaviour
             }
 
             mana += manaRecovery;
-            CheckAndDisplayMana();
+            CheckAndDisplayMana(true);
             resultMana = mana;
             CheckAndDisplayResultMana();
 
@@ -464,9 +481,10 @@ public class CardGame : MonoBehaviour
     {
         foreach (GameObject theCard in theDeck)
         {
-            if (!theCard.activeSelf)
+            if (theCard.GetComponent<CardObject>().isToBeRefreshed)
             {
-                theCard.SetActive(true);
+                theCard.GetComponent<CardObject>().isToBeRefreshed = true;
+               // theCard.SetActive(true);
                 int randomIndex = UnityEngine.Random.Range(0, theCardList.Count);
                 GameObject randomCard = theCardList[randomIndex];
                 theCardList.RemoveAt(randomIndex);
@@ -568,11 +586,14 @@ public class CardGame : MonoBehaviour
         }
     }
 
-    void CheckAndDisplayMana()
+    void CheckAndDisplayMana(bool checkMax)
     {
-        if (mana > manaMaxValue)
+        if (checkMax)
         {
-            mana = manaMaxValue;
+            if (mana > manaMaxValue)
+            {
+                mana = manaMaxValue;
+            }
         }
 
         if (mana < 0)
@@ -580,12 +601,32 @@ public class CardGame : MonoBehaviour
             mana = 0;
         }
 
-        manaDisplay.text = "Mana: " + mana;
+        UpdateManaPlayer();
     }
     void CheckAndDisplayResultMana()
     {
         resultManaDisplay.text = "Result mana: " + resultMana;
     }
-}
 
+    void UpdateHealthEnemy()
+    {
+        enemyHealthDisplay.text = theEnemy.GetComponent<CharacterObject>().theHealth.ToString() + "/" +
+            theEnemy.GetComponent<CharacterObject>().maxHealth.ToString();
+        enemyHealthSlider.value = theEnemy.GetComponent<CharacterObject>().theHealth;
+    }
+
+    void UpdateHealthPlayer()
+    {
+        playerHealthDisplay.text = thePlayer.GetComponent<CharacterObject>().theHealth.ToString() + "/" +
+            thePlayer.GetComponent<CharacterObject>().maxHealth.ToString();
+        playerHealthSlider.value = thePlayer.GetComponent<CharacterObject>().theHealth;
+    }
+
+    void UpdateManaPlayer()
+    {
+        manaDisplay.text = mana.ToString() + "/" +
+            manaMaxValue.ToString();
+        playerManaSlider.value = mana;
+    }
+}
 

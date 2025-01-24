@@ -136,8 +136,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5949, y: 0.9832, z: 0.01657332}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.4104864, y: 0.6784169, z: 0.01143574}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2016921555844251216}
   - {fileID: 3964155546302228840}
@@ -230,6 +230,8 @@ MonoBehaviour:
   manaCost: 2
   isMarked: 0
   isToBeDeleted: 0
+  isToBeRefreshed: 0
+  isDeleted: 0
   amountGenerate: 10
   theValue: 1
   theType: Element_Fire
@@ -295,6 +297,9 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   theTime: 1
+  originalPosition: {x: 0, y: 0, z: 0}
+  isMoving: 0
+  isMovingBack: 0
 --- !u!1 &1222975143171336409
 GameObject:
   m_ObjectHideFlags: 0

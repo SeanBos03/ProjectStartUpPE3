@@ -62,14 +62,14 @@ public class SpellManager : MonoBehaviour
         //isMovingBack = true;
         //isMoving = false;
         //StartCoroutine(MoveUsingCurve(transform.position, orginalPosition, theTime, CardDiscard[1]));
-        Debug.Log($"{name} {originalPosition}");
+      //  Debug.Log($"{name} {originalPosition}");
         transform.DOMove(originalPosition, theTime);
     }
     public void StartMoving()
     {
         StopAllCoroutines();
         originalPosition = transform.position;
-        Debug.Log($"{name} {originalPosition}");
+      //  Debug.Log($"{name} {originalPosition}");
         //isMoving = true;
         //isMovingBack = false;
         transform.DOMove(Discard_Pile.position, theTime);
