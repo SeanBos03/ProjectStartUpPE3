@@ -12,10 +12,18 @@ public class Room : MonoBehaviour
     public List<Room> connectedRooms = new List<Room>(); // Array of connected rooms
     public GameObject linePrefab; // Reference to a prefab containing a LineRenderer
     public bool isLocked = true; //set the lock for the rooms
+    private Color originalColor;       // Stores the original color of the GameObject
+    private Renderer objectRenderer;  // Renderer component of the GameObject
+    private List<Room> emptyRooms = new List<Room>();
 
     void Start()
     {
         DrawConnections();
+        objectRenderer = GetComponent<Renderer>();
+        if (objectRenderer != null)
+        {
+            originalColor = objectRenderer.material.color;
+        }
     }
 
     void DrawConnections()
@@ -50,10 +58,10 @@ public class Room : MonoBehaviour
     {
         if (!isLocked)
         {
-            GetComponent<MeshRenderer>().material.color = Color.white;
-            Debug.Log("WHITE");
-        }
 
+            objectRenderer.material.color = originalColor;
+            Debug.Log("NoHover");
+        }
         return;
     }
 
