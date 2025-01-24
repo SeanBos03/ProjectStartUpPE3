@@ -15,6 +15,7 @@ public class CardObject : MonoBehaviour
     public int theValue;
     public string theType;
     public int multiplierNumber; //an ability card applies mulitplier to element card increasing the value
+    public bool doesHealing;
     void Start()
     {
     }
@@ -26,6 +27,8 @@ public class CardObject : MonoBehaviour
         manaDiscardValue = other.manaDiscardValue;
         isToBeRefreshed = other.isToBeRefreshed;
         isDeleted = other.isDeleted;
+        doesHealing = other.doesHealing;
+
         if (theType.Contains("Multiplier"))
         {
             this.transform.Find("Canvas").gameObject.SetActive(true);

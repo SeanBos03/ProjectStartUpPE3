@@ -8,7 +8,6 @@ using Unity.Burst.CompilerServices;
 using UnityEngine.Assertions.Must;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Security.Cryptography;
 public class CardGame : MonoBehaviour
 {
     [SerializeField] int comboBonusValue = 2;
@@ -26,6 +25,7 @@ public class CardGame : MonoBehaviour
     [SerializeField] TMP_Text manaDisplay;
     [SerializeField] TMP_Text resultManaDisplay;
     [SerializeField] TMP_Text cardAmountDisplay;
+    [SerializeField] TMP_Text enemyDamageDisplay;
 
     [SerializeField] GameObject thePlayer;
     [SerializeField] GameObject theEnemy;
@@ -44,12 +44,15 @@ public class CardGame : MonoBehaviour
 
     public LayerMask ignoreLayer;  // Reference to the layer that ray ignore
 
+    public float damageDisplayTime;
+
     Animator enemyAnimator;
+    Coroutine enemyDisplaytimer;
     void Start()
     {
         enemyAnimator = theEnemy.GetComponent<Animator>();
         enemyAnimator.SetInteger("animState", 1);
-
+        enemyDisplaytimer = StartCoroutine(DisplayEnemyDamage());
         enemyHealthSlider.maxValue = theEnemy.GetComponent<CharacterObject>().maxHealth;
         playerHealthSlider.maxValue = thePlayer.GetComponent<CharacterObject>().maxHealth;
         playerManaSlider.maxValue = manaMaxValue;
@@ -266,6 +269,11 @@ public class CardGame : MonoBehaviour
 
                                 else
                                 {
+                                    if (cardSelectList[i].GetComponent<CardObject>().doesHealing)
+                                    {
+                                        valueSum -= cardSelectList[i].GetComponent<CardObject>().theValue;
+                                    }
+
                                     valueSum += cardSelectList[i].GetComponent<CardObject>().theValue;
                                     amountOfElements++;
                                 }
@@ -312,6 +320,11 @@ public class CardGame : MonoBehaviour
                                 //mixture matched
                                 if (checkMixture.CheckMixtureMatched(theMixure))
                                 {
+                                    if (theMixure.doesHealing)
+                                    {
+                                        theNumber -= theMixure.value;
+                                    }
+
                                     theNumber += theMixure.value;
                                     break;
                                 }
@@ -401,6 +414,20 @@ public class CardGame : MonoBehaviour
             thePlayer.GetComponent<CharacterObject>().theHealth -= theNumber;
             UpdateHealthPlayer();
             playerTurn = true;
+
+            enemyDamageDisplay.text = theNumber.ToString();
+            enemyDamageDisplay.gameObject.SetActive(true);
+            if (enemyDisplaytimer == null)
+            {
+
+                enemyDisplaytimer = StartCoroutine(DisplayEnemyDamage());
+            }
+
+            else
+            {
+                StopCoroutine(enemyDisplaytimer);
+                enemyDisplaytimer = StartCoroutine(DisplayEnemyDamage());
+            }
 
             Debug.Log("Enemy deals: " +  theNumber);
 
@@ -645,6 +672,15 @@ public class CardGame : MonoBehaviour
         manaDisplay.text = mana.ToString() + "/" +
             manaMaxValue.ToString();
         playerManaSlider.value = mana;
+    }
+
+    private IEnumerator DisplayEnemyDamage()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(damageDisplayTime); // Wait for 3 seconds
+            enemyDamageDisplay.gameObject.SetActive(false);
+        }
     }
 }
 

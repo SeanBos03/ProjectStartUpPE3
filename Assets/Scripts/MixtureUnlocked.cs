@@ -12,8 +12,8 @@ public class MixtureUnlocked : MonoBehaviour
         GameObject theTextObject = GameObject.Find("Mixture/theText");
         TMP_Text textt = theTextObject.GetComponent<TMP_Text>();
         textt.text = "= " + theMixture.value;
-
         bool mixtureMatched = false;
+
         foreach (GameData.Mixture mixture in GameData.mixturesKnown)
         {
             if (mixture.CheckMixtureMatched(theMixture))

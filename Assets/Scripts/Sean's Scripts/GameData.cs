@@ -18,6 +18,7 @@ public class GameData : MonoBehaviour
 
         public List<string> theElements;
         public int value;
+        public bool doesHealing;
         public bool CheckMixtureMatched(Mixture other)
         {
             var thisList = theElements.GroupBy(x => x).ToDictionary(g => g.Key, g => g.Count());
