@@ -43,8 +43,13 @@ public class CardGame : MonoBehaviour
     bool isMaking;
 
     public LayerMask ignoreLayer;  // Reference to the layer that ray ignore
+
+    Animator enemyAnimator;
     void Start()
     {
+        enemyAnimator = theEnemy.GetComponent<Animator>();
+        enemyAnimator.SetInteger("animState", 1);
+
         enemyHealthSlider.maxValue = theEnemy.GetComponent<CharacterObject>().maxHealth;
         playerHealthSlider.maxValue = thePlayer.GetComponent<CharacterObject>().maxHealth;
         playerManaSlider.maxValue = manaMaxValue;
@@ -181,7 +186,10 @@ public class CardGame : MonoBehaviour
                     //end turn button click
                     if (hit.collider.gameObject.name == "EndTurnButton")
                     {
-                        playerTurn = false;
+                        if (enemyAnimator.GetInteger("animState") == 1)
+                        {
+                            playerTurn = false;
+                        }
                     }
 
                     //confirm button click
@@ -306,6 +314,11 @@ public class CardGame : MonoBehaviour
                             }
 
                             theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber;
+
+                            if (theNumber > 0)
+                            {
+                                enemyAnimator.SetInteger("animState", 2);
+                            }
                             
                             UpdateHealthEnemy();
                             Debug.Log("Player deals: " + theNumber);
@@ -361,6 +374,7 @@ public class CardGame : MonoBehaviour
         //enemy's turn
         else
         {
+            enemyAnimator.SetInteger("animState", 3);
             int amountCardMissing = 0;
             foreach (GameObject theCard in theDeck)
             {
