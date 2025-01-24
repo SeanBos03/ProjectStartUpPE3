@@ -195,6 +195,10 @@ public class CardGame : MonoBehaviour
                     //confirm button click
                     if (hit.collider.gameObject.name == "ConfirmButton")
                     {
+                        if (enemyAnimator.GetInteger("animState") != 1)                      {
+                            return;
+                        }
+
                         int amountElement = 0;
 
                         List<String> elementListCompare = new List<String>();

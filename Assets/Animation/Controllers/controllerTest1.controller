@@ -65,7 +65,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: GetHit
-  m_Speed: 15.21
+  m_Speed: 5.56
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 3683802634957164114}
@@ -263,7 +263,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 1827226128182048838, guid: 26bb3516925c0db4eae1bc39c2269a10,
+  m_Motion: {fileID: 1827226128182048838, guid: 2edd2bcce5cefb04e84b5ad868db2fa7,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 
@@ -317,7 +317,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 1827226128182048838, guid: dd78837536b34ec48b6248fb3fac38ac,
+  m_Motion: {fileID: 1827226128182048838, guid: 67f47df1f954ae44e96740bdfb367a66,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 
