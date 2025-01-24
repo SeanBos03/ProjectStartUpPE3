@@ -9,8 +9,8 @@ public class MixtureUnlocked : MonoBehaviour
 
     void Start()
     {
-        GameObject theTextObject = GameObject.Find("Mixture/theTextx");
-        TextMeshProUGUI textt = theTextObject.GetComponent<TextMeshProUGUI>();
+        GameObject theTextObject = GameObject.Find("Mixture/theText");
+        TMP_Text textt = theTextObject.GetComponent<TMP_Text>();
         textt.text = "= " + theMixture.value;
 
         bool mixtureMatched = false;
