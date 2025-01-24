@@ -1126,11 +1126,13 @@ MonoBehaviour:
     - Element_Water
     - Element_Fire
     value: 20
+    doesHealing: 0
   - theElements:
     - Element_Green
     - Element_Water
     - Element_Water
     value: 20
+    doesHealing: 0
   theElements:
   - Element_Fire
   - Element_Green
@@ -2559,13 +2561,14 @@ MonoBehaviour:
     - Element_Ground
     - Element_Water
     value: 20
+    doesHealing: 0
   button2Mixture:
     theElements:
     - Element_Fire
     - Element_Thunder
     - Element_Thunder
-    - sdkjsadfklfda
     value: 20
+    doesHealing: 0
 --- !u!1 &2082827077
 GameObject:
   m_ObjectHideFlags: 0

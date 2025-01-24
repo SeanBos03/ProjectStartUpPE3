@@ -44,15 +44,17 @@ public class CardGame : MonoBehaviour
 
     public LayerMask ignoreLayer;  // Reference to the layer that ray ignore
 
+    public float damageDisplayTimeStart;
     public float damageDisplayTime;
 
     Animator enemyAnimator;
-    Coroutine enemyDisplaytimer;
+    Coroutine enemyDisplayStartTimer;
+    Coroutine enemyDisplayTimer;
     void Start()
     {
         enemyAnimator = theEnemy.GetComponent<Animator>();
         enemyAnimator.SetInteger("animState", 1);
-        enemyDisplaytimer = StartCoroutine(DisplayEnemyDamage());
+        enemyDisplayTimer = StartCoroutine(DisplayEnemyDamage());
         enemyHealthSlider.maxValue = theEnemy.GetComponent<CharacterObject>().maxHealth;
         playerHealthSlider.maxValue = thePlayer.GetComponent<CharacterObject>().maxHealth;
         playerManaSlider.maxValue = manaMaxValue;
@@ -383,7 +385,10 @@ public class CardGame : MonoBehaviour
                 //see if player clicks on a card
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    HandleCardDelete(hit.collider.gameObject);
+                    if (hit.collider.CompareTag("Card")) 
+                    {
+                        HandleCardDelete(hit.collider.gameObject);
+                    }
                 }
             }
         }
@@ -417,16 +422,16 @@ public class CardGame : MonoBehaviour
 
             enemyDamageDisplay.text = theNumber.ToString();
             enemyDamageDisplay.gameObject.SetActive(true);
-            if (enemyDisplaytimer == null)
+            if (enemyDisplayTimer == null)
             {
 
-                enemyDisplaytimer = StartCoroutine(DisplayEnemyDamage());
+                enemyDisplayTimer = StartCoroutine(DisplayEnemyDamage());
             }
 
             else
             {
-                StopCoroutine(enemyDisplaytimer);
-                enemyDisplaytimer = StartCoroutine(DisplayEnemyDamage());
+                StopCoroutine(enemyDisplayTimer);
+                enemyDisplayTimer = StartCoroutine(DisplayEnemyDamage());
             }
 
             Debug.Log("Enemy deals: " +  theNumber);
@@ -506,19 +511,24 @@ public class CardGame : MonoBehaviour
         {
             if (theCard == cardObject)
             {
-                cardRepeat = true;
+                cardDelteList.Remove(theCard);
+                resultMana -= theCard.gameObject.GetComponent<CardObject>().manaDiscardValue;
+                CheckAndDisplayResultMana();
+                Debug.Log("Card repeat");
                 break;
             }
         }
 
+        UpdateCardStatus(cardObject, false, true, true);
+        cardObject.transform.Find("cardMarkDelete").gameObject.SetActive(true);
+        cardObject.gameObject.GetComponent<CardObject>().isToBeDeleted = true;
+        cardDelteList.Add(cardObject);
+        resultMana += cardObject.gameObject.GetComponent<CardObject>().manaDiscardValue;
+        CheckAndDisplayResultMana();
+
         if (cardRepeat == false)
         {
-            UpdateCardStatus(cardObject, false, true, true);
-            cardObject.transform.Find("cardMarkDelete").gameObject.SetActive(true);
-            cardObject.gameObject.GetComponent<CardObject>().isToBeDeleted = true;
-            cardDelteList.Add(cardObject);
-            resultMana += cardObject.gameObject.GetComponent<CardObject>().manaDiscardValue;
-            CheckAndDisplayResultMana();
+            
         }
     }
 
@@ -674,11 +684,20 @@ public class CardGame : MonoBehaviour
         playerManaSlider.value = mana;
     }
 
+
+    private IEnumerator DisplayStartEnemyDamage()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(damageDisplayTimeStart);
+        }
+    }
+
     private IEnumerator DisplayEnemyDamage()
     {
         while (true)
         {
-            yield return new WaitForSeconds(damageDisplayTime); // Wait for 3 seconds
+            yield return new WaitForSeconds(damageDisplayTime);
             enemyDamageDisplay.gameObject.SetActive(false);
         }
     }
