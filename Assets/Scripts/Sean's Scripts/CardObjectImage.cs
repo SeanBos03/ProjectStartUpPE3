@@ -30,8 +30,8 @@ public class CardObjectImage : MonoBehaviour
         isDeleted = other.isDeleted;
         doesHealing = other.doesHealing;
 
-        Image theImage = transform.Find("cardMark").gameObject.GetComponent<Image>();
-        theImage.sprite = other.transform.Find("cardMark").gameObject.GetComponent<Image>().sprite;
+        Image theImage = transform.Find("CardBase").GetComponent<Image>();
+        theImage.sprite = other.transform.Find("CardBase").GetComponent<Image>().sprite;
 
         if (theType.Contains("Multiplier"))
         {

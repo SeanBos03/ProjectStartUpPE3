@@ -9,8 +9,9 @@ using UnityEngine.Assertions.Must;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
-public class CardGameUI : MonoBehaviour, IPointerClickHandler
+public class CardGameUI : MonoBehaviour
 {
     [SerializeField] int comboBonusValue = 2;
     [SerializeField] int mana = 10;
@@ -98,7 +99,6 @@ public class CardGameUI : MonoBehaviour, IPointerClickHandler
             }
         }
     }
-
     //at start, place cards at the deck
     private System.Collections.IEnumerator RandomizeDeckTimer()
     {
@@ -123,21 +123,6 @@ public class CardGameUI : MonoBehaviour, IPointerClickHandler
         cardAmountDisplay.text = "Card amount: " + theCardList.Count.ToString();
 
     }
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        Debug.Log("Try something");
-        if (CompareTag("Card"))
-        {
-            if (eventData.button == PointerEventData.InputButton.Left)
-            {
-                Debug.Log("Aaa");
-            }
-            else if (eventData.button == PointerEventData.InputButton.Right)
-            {
-                Debug.Log("Aaaaab");
-            }
-        }
-    }
 
     void Update()
     {
@@ -151,70 +136,77 @@ public class CardGameUI : MonoBehaviour, IPointerClickHandler
         {
             if (Input.GetMouseButtonDown(0)) //left mouse button click
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red, 0.5f);
-
-                //see if player clicks on a card
-                if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+                foreach (GameObject theDeckCard in theDeck)
                 {
-                    //card object click
-                    if (hit.collider.CompareTag("Card"))
+                    RectTransform rectTransform = theDeckCard.GetComponent<RectTransform>();
+                    Vector2 localPoint;
+                    if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out localPoint))
                     {
-                        Debug.Log("Card click");
-                        //click marked card to unselected
-                        if (hit.collider.gameObject.GetComponent<CardObjectImage>().isMarked == true)
+                        if (rectTransform.rect.Contains(localPoint))
                         {
-                            foreach (GameObject theCard in cardSelectList)
+                            if (theDeckCard.CompareTag("Card"))
                             {
-                                if (hit.collider.gameObject == theCard)
+                                Debug.Log("Card click");
+                                //click marked card to unselected
+                                if (theDeckCard.GetComponent<CardObjectImage>().isMarked == true)
                                 {
-                                    resultMana += theCard.gameObject.GetComponent<CardObjectImage>().manaCost;
-                                    CheckAndDisplayResultMana();
-                                    theCard.GetComponent<CardObjectImage>().isMarked = false;
-                                    theCard.transform.Find("cardMark").gameObject.SetActive(false);
-                                    cardSelectList.Remove(theCard);
-                                    break;
+                                    foreach (GameObject theCard in cardSelectList)
+                                    {
+                                        if (theDeckCard.gameObject == theCard)
+                                        {
+                                            resultMana += theCard.gameObject.GetComponent<CardObjectImage>().manaCost;
+                                            CheckAndDisplayResultMana();
+                                            theCard.GetComponent<CardObjectImage>().isMarked = false;
+                                            theCard.transform.Find("cardMark").gameObject.SetActive(false);
+                                            cardSelectList.Remove(theCard);
+                                            break;
+                                        }
+                                    }
                                 }
+
+                                //click toBeDeleredCard card to unselect
+                                else if (theDeckCard.GetComponent<CardObjectImage>().isToBeDeleted == true)
+                                {
+                                    foreach (GameObject theCard in cardDelteList)
+                                    {
+                                        if (theDeckCard.gameObject == theCard)
+                                        {
+                                            resultMana -= theCard.gameObject.GetComponent<CardObjectImage>().manaDiscardValue;
+                                            CheckAndDisplayResultMana();
+                                            theCard.GetComponent<CardObjectImage>().isToBeDeleted = false;
+                                            theCard.transform.Find("cardMarkDelete").gameObject.SetActive(false);
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                //select unmarked card
+                                else
+                                {
+                                    HandleCardClick(theDeckCard);
+                                }
+
                             }
                         }
-
-                        //click toBeDeleredCard card to unselect
-                        else if (hit.collider.gameObject.GetComponent<CardObjectImage>().isToBeDeleted == true)
-                        {
-                            foreach (GameObject theCard in cardDelteList)
-                            {
-                                if (hit.collider.gameObject == theCard)
-                                {
-                                    resultMana -= theCard.gameObject.GetComponent<CardObjectImage>().manaDiscardValue;
-                                    CheckAndDisplayResultMana();
-                                    theCard.GetComponent<CardObjectImage>().isToBeDeleted = false;
-                                    theCard.transform.Find("cardMarkDelete").gameObject.SetActive(false);
-                                    break;
-                                }
-                            }
-                        }
-
-                        //select unmarked card
-                        else
-                        {
-                            HandleCardClick(hit.collider.gameObject);
-                        }
-
                     }
                 }
             }
 
             if (Input.GetMouseButtonDown(1)) //right click
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red, 0.5f);
-
-                //see if player clicks on a card
-                if (Physics.Raycast(ray, out RaycastHit hit))
+                foreach (GameObject theDeckCard in theDeck)
                 {
-                    if (hit.collider.CompareTag("Card"))
+                    RectTransform rectTransform = theDeckCard.GetComponent<RectTransform>();
+                    Vector2 localPoint;
+                    if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out localPoint))
                     {
-                        HandleCardDelete(hit.collider.gameObject);
+                        if (rectTransform.rect.Contains(localPoint))
+                        {
+                            if (theDeckCard.CompareTag("Card"))
+                            {
+                                HandleCardDelete(theDeckCard);
+                            }
+                        }
                     }
                 }
             }
@@ -339,9 +331,12 @@ public class CardGameUI : MonoBehaviour, IPointerClickHandler
             if (theCard == cardObject)
             {
                 cardDelteList.Remove(theCard);
-                resultMana -= theCard.gameObject.GetComponent<CardObjectImage>().manaDiscardValue;
+                if (theCard.gameObject.GetComponent<CardObjectImage>().isToBeDeleted)
+                {
+                    resultMana -= theCard.gameObject.GetComponent<CardObjectImage>().manaDiscardValue;
+                }
+                
                 CheckAndDisplayResultMana();
-                Debug.Log("Card repeat");
                 break;
             }
         }
@@ -673,6 +668,7 @@ public class CardGameUI : MonoBehaviour, IPointerClickHandler
                 {
                     enemyAnimator.SetInteger("animState", 2);
                 }
+
 
                 UpdateHealthEnemy();
                 Debug.Log("Player deals: " + theNumber);
