@@ -667,6 +667,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   theHealth: 100
+  elementsResistant: []
+  elementsResistantValues: 
 --- !u!1 &166043096
 GameObject:
   m_ObjectHideFlags: 0
@@ -2295,6 +2297,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   theHealth: 100
+  elementsResistant:
+  - Element_Fire
+  - Element_Green
+  elementsResistantValues: 05000000feffffff
 --- !u!1 &487117378
 GameObject:
   m_ObjectHideFlags: 0
