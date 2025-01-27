@@ -10,6 +10,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
+using static UnityEditor.Rendering.FilterWindow;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
+using UnityEditor.Experimental.GraphView;
 
 public class CardGameUI : MonoBehaviour
 {
@@ -590,10 +593,11 @@ public class CardGameUI : MonoBehaviour
             {
                 int valueSum = 0;
                 int multiplierSum = 0;
-                int amountOfElements = 0;
+                int amountOfElements = 0; //amount of cards selected that are not multiplier card
 
                 for (int i = 0; i < cardSelectList.Count; i++)
                 {
+                    //adds the multipler values
                     if (cardSelectList[i].GetComponent<CardObjectImage>().theType.Contains("Multiplier"))
                     {
                         multiplierSum += cardSelectList[i].GetComponent<CardObjectImage>().multiplierNumber;
@@ -601,6 +605,7 @@ public class CardGameUI : MonoBehaviour
 
                     else
                     {
+                        //does value sum
                         if (cardSelectList[i].GetComponent<CardObjectImage>().doesHealing)
                         {
                             valueSum -= cardSelectList[i].GetComponent<CardObjectImage>().theValue;
@@ -611,14 +616,18 @@ public class CardGameUI : MonoBehaviour
                     }
                 }
 
+                //if there is no multipllier value simply, do no multiplier bonus aka * 1
                 if (multiplierSum == 0)
                 {
                     multiplierSum = 1;
                 }
 
                 int theNumber = 0;
-                theNumber = valueSum * multiplierSum;
+                theNumber = valueSum * multiplierSum; //base damage 
 
+                //there will only be two unique element at most (uniqueElementCardList.count is either 2 or 1)
+                //so, checking if the two unique element combination matches one of the natural combos
+                //(GameData.combosKnown) is the natural combos
                 if (uniqueElementCardList.Count > 1)
                 {
                     GameData.Combo combo = new GameData.Combo();
@@ -636,10 +645,11 @@ public class CardGameUI : MonoBehaviour
 
                     if (foundCombo)
                     {
-                        theNumber += (amountOfElements * comboBonusValue);
+                        theNumber += (amountOfElements * comboBonusValue); //natural combo calculation.  dealing bonus damage depends on the amount of element cards and the cobmo bonus multiplier set
                     }
                 }
 
+                //learned combos calculation (combos that are known at start or from shop, has their own bonus value)
                 foreach (GameData.Mixture theMixure in GameData.mixturesKnown)
                 {
                     GameData.Mixture checkMixture = new GameData.Mixture();
@@ -649,7 +659,7 @@ public class CardGameUI : MonoBehaviour
                         checkMixture.theElements.Add(theCard.GetComponent<CardObjectImage>().theType);
                     }
 
-                    //mixture matched
+                    //mixture matched, does the value the mixture has
                     if (checkMixture.CheckMixtureMatched(theMixure))
                     {
                         if (theMixure.doesHealing)
@@ -657,7 +667,7 @@ public class CardGameUI : MonoBehaviour
                             theNumber -= theMixure.value;
                         }
 
-                        theNumber += theMixure.value;
+                        theNumber += theMixure.value; //learned combo calculation
                         break;
                     }
                 }

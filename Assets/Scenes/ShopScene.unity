@@ -526,6 +526,61 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 389545024}
   m_CullTransparentMesh: 1
+--- !u!1 &441232405
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 441232407}
+  - component: {fileID: 441232406}
+  m_Layer: 0
+  m_Name: KnownSynergySetter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &441232406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441232405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14e4019774313c849bd973ecce8189c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  synergyList:
+  - ingredient1: Element_Fire
+    ingredient2: Element_Water
+  - ingredient1: Element_Green
+    ingredient2: Element_Fire
+  - ingredient1: Element_Ground
+    ingredient2: Element_Green
+  - ingredient1: Element_Thunder
+    ingredient2: Element_Ground
+  - ingredient1: Element_Water
+    ingredient2: Element_Thunder
+--- !u!4 &441232407
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441232405}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 709.5611, y: 357.8396, z: -287.02017}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &584096488
 GameObject:
   m_ObjectHideFlags: 0
@@ -1102,7 +1157,7 @@ GameObject:
   - component: {fileID: 894233536}
   - component: {fileID: 894233535}
   m_Layer: 0
-  m_Name: MixtureSetter
+  m_Name: KnownMixtureSetter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2716,3 +2771,4 @@ SceneRoots:
   - {fileID: 655022779}
   - {fileID: 2033135362}
   - {fileID: 894233536}
+  - {fileID: 441232407}

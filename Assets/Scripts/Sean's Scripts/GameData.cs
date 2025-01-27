@@ -7,12 +7,13 @@ using UnityEngine.SceneManagement;
 
 public class GameData : MonoBehaviour
 {
-    public static List<Combo> combosKnown = new List<Combo>();
-    public static List<Mixture> mixturesKnown = new List<Mixture>();
-    public static bool startedMixtureSetted = false;
-    public static List<String> elementList = new List<String>(); //list of elements
+    public static List<Combo> combosKnown = new List<Combo>(); //the natural combos
+    public static List<Mixture> mixturesKnown = new List<Mixture>(); //combos you can learn
+    public static bool startedMixtureSet = false;
+    public static bool startedComboSet = false;
+    public static List<String> elementList = new List<String>();
 
-    [System.Serializable]
+    [System.Serializable] //able edit this struct in inspector
     public struct Mixture
     {
 
@@ -65,11 +66,12 @@ public class GameData : MonoBehaviour
         }
     }
 
+    [System.Serializable] //able edit this struct in inspector
     public struct Combo
     {
         public string ingredient1;
         public string ingredient2;
-        public bool isStrong;
+       // public bool isStrong;    //no longer used leaving there just in case
         public bool CheckComboMatched(Combo other)
         {
             if ((ingredient1 == other.ingredient1 && ingredient2 == other.ingredient2)
