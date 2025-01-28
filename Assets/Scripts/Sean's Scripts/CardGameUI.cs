@@ -219,7 +219,7 @@ public class CardGameUI : MonoBehaviour
         //enemy's turn
         else
         {
-            enemyAnimator.SetInteger("animState", 3);
+            
             int amountCardMissing = 0;
             foreach (GameObject theCard in theDeck)
             {
@@ -236,28 +236,37 @@ public class CardGameUI : MonoBehaviour
                 }
             }
 
-
-            int theNumber;
-            theNumber = UnityEngine.Random.Range(2, 21);
-            thePlayer.GetComponent<CharacterObject>().theHealth -= theNumber;
-            UpdateHealthPlayer();
-            playerTurn = true;
-
-            enemyDamageDisplay.text = theNumber.ToString();
-            enemyDamageDisplay.gameObject.SetActive(true);
-            if (enemyDisplayTimer == null)
+            if (!theEnemy.GetComponent<CharacterObject>().isStuned)
             {
+                enemyAnimator.SetInteger("animState", 3);
+                int theNumber;
+                theNumber = UnityEngine.Random.Range(2, 21);
+                thePlayer.GetComponent<CharacterObject>().theHealth -= theNumber;
+                UpdateHealthPlayer();
 
-                enemyDisplayTimer = StartCoroutine(DisplayEnemyDamage());
+                enemyDamageDisplay.text = theNumber.ToString();
+                enemyDamageDisplay.gameObject.SetActive(true);
+
+                if (enemyDisplayTimer == null)
+                {
+
+                    enemyDisplayTimer = StartCoroutine(DisplayEnemyDamage());
+                }
+
+                else
+                {
+                    StopCoroutine(enemyDisplayTimer);
+                    enemyDisplayTimer = StartCoroutine(DisplayEnemyDamage());
+                }
+                Debug.Log("Enemy deals: " + theNumber);
             }
 
             else
             {
-                StopCoroutine(enemyDisplayTimer);
-                enemyDisplayTimer = StartCoroutine(DisplayEnemyDamage());
+                Debug.Log("Enemy stunned");
             }
 
-            Debug.Log("Enemy deals: " + theNumber);
+            theEnemy.GetComponent<CharacterObject>().TryCeaseStun();
 
             if (thePlayer.GetComponent<CharacterObject>().theHealth <= 0)
             {
@@ -284,7 +293,7 @@ public class CardGameUI : MonoBehaviour
             CheckAndDisplayMana(true);
             resultMana = mana;
             CheckAndDisplayResultMana();
-
+            playerTurn = true;
         }
     }
 
@@ -559,6 +568,7 @@ public class CardGameUI : MonoBehaviour
             int elementAmountAdd = 0;
             List<String> elementListCompare = new List<String>();
             List<GameObject> uniqueElementCardList = new List<GameObject>();
+            int stunValue = 0;
 
             //copy the values of elementList to elementListCompare. So modifying elementListCompare wont modify elementList
             foreach (String element in GameData.elementList)
@@ -699,7 +709,8 @@ public class CardGameUI : MonoBehaviour
                     }
                 }
 
-                theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber;
+                theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber; //final damage reduce
+                theEnemy.GetComponent<CharacterObject>().DealStun(stunValue);
 
                 if (theNumber > 0)
                 {
