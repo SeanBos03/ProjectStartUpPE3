@@ -16,6 +16,40 @@ MonoBehaviour:
   intensity:
     m_OverrideState: 1
     m_Value: 0.057
+--- !u!114 &-7486854436943178442
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 558a8e2b6826cf840aae193990ba9f2e, type: 3}
+  m_Name: ShadowsMidtonesHighlights
+  m_EditorClassIdentifier: 
+  active: 1
+  shadows:
+    m_OverrideState: 1
+    m_Value: {x: 0.9403044, y: 0.94831115, z: 1, w: -0.058040958}
+  midtones:
+    m_OverrideState: 0
+    m_Value: {x: 1, y: 1, z: 1, w: 0}
+  highlights:
+    m_OverrideState: 0
+    m_Value: {x: 1, y: 1, z: 1, w: 0}
+  shadowsStart:
+    m_OverrideState: 1
+    m_Value: 0
+  shadowsEnd:
+    m_OverrideState: 1
+    m_Value: 0.3
+  highlightsStart:
+    m_OverrideState: 1
+    m_Value: 0.55
+  highlightsEnd:
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &-5229287634951978166
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -37,7 +71,7 @@ MonoBehaviour:
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.362
+    m_Value: 0.386
   smoothness:
     m_OverrideState: 0
     m_Value: 0.2
@@ -155,6 +189,7 @@ MonoBehaviour:
   - {fileID: -735219722405277770}
   - {fileID: 7177395677730605893}
   - {fileID: -8739607498814505312}
+  - {fileID: -7486854436943178442}
 --- !u!114 &2356097203691789388
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -220,7 +255,7 @@ MonoBehaviour:
     m_Value: 2
   intensity:
     m_OverrideState: 1
-    m_Value: 0.192
+    m_Value: 0.172
   response:
     m_OverrideState: 1
     m_Value: 0.8
