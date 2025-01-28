@@ -219,7 +219,7 @@ public class CardGameUI : MonoBehaviour
         //enemy's turn
         else
         {
-            
+            Debug.Log("StunBar: " + theEnemy.GetComponent<CharacterObject>().stunBar);
             int amountCardMissing = 0;
             foreach (GameObject theCard in theDeck)
             {
@@ -263,7 +263,7 @@ public class CardGameUI : MonoBehaviour
 
             else
             {
-                Debug.Log("Enemy stunned");
+            //    Debug.Log("Enemy stunned");
             }
 
             theEnemy.GetComponent<CharacterObject>().TryCeaseStun();
@@ -710,6 +710,7 @@ public class CardGameUI : MonoBehaviour
                 }
 
                 theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber; //final damage reduce
+                stunValue += theEnemy.GetComponent<CharacterObject>().DetermineWeaknessStunt(theSelectedElements);
                 theEnemy.GetComponent<CharacterObject>().DealStun(stunValue);
 
                 if (theNumber > 0)

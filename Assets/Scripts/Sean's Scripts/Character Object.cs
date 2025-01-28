@@ -8,6 +8,8 @@ public class CharacterObject : MonoBehaviour
     [HideInInspector] public int theHealth;
     public List<string> elementsResistant = new List<string>();
     public List<int> elementsResistantValues = new List<int>();
+    public List<string> elementsWeakness = new List<string>();
+    public List<int> elementsWeaknessStuntValue = new List<int>();
     [HideInInspector] public int stunBar;
     public int stunThreshold; //threshold the stunBar can reach before character turns stunned
     [HideInInspector] public bool isStuned;
@@ -21,6 +23,11 @@ public class CharacterObject : MonoBehaviour
         if (elementsResistant.Count != elementsResistant.Count)
         {
             Debug.Log("Character resistance values not valid");
+        }
+
+        if (elementsWeakness.Count != elementsWeaknessStuntValue.Count)
+        {
+            Debug.Log("Character weakness values not valid");
         }
     }
 
@@ -39,6 +46,23 @@ public class CharacterObject : MonoBehaviour
             }
         }
         return sumResistanceSum;
+    }
+
+    public int DetermineWeaknessStunt(List<string> theElements)
+    {
+        int sumStuntSum = 0;
+        foreach (string element in theElements)
+        {
+            for (int i = 0; i < elementsWeakness.Count; i++)
+            {
+                if (element == elementsWeakness[i])
+                {
+                    sumStuntSum += elementsWeaknessStuntValue[i];
+                    break;
+                }
+            }
+        }
+        return sumStuntSum;
     }
 
     public void DealStun(int theValue)
@@ -67,7 +91,7 @@ public class CharacterObject : MonoBehaviour
     //this will decrease the amount of turns of the current value by 1 and see if it's over
     public void TryCeaseStun()
     {
-        Debug.Log(turnsStunnedCurrentValue);
+      //  Debug.Log(turnsStunnedCurrentValue);
    //     Debug.Log("isStuned: " + isStuned);
         if (turnsStunnedCurrentValue <= 0) //this should never be ture, but just in case
         {

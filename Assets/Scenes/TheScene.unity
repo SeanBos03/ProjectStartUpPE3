@@ -669,6 +669,8 @@ MonoBehaviour:
   theHealth: 100
   elementsResistant: []
   elementsResistantValues: 
+  elementsWeakness: []
+  elementsWeaknessStuntValue: 
   stunBar: 0
   stunThreshold: 0
   isStuned: 0
@@ -2305,8 +2307,11 @@ MonoBehaviour:
   - Element_Fire
   - Element_Green
   elementsResistantValues: 05000000feffffff
+  elementsWeakness:
+  - Element_Water
+  elementsWeaknessStuntValue: 19000000
   stunBar: 0
-  stunThreshold: 0
+  stunThreshold: 100
   isStuned: 0
   turnsStunned: 2
 --- !u!1 &487117378
