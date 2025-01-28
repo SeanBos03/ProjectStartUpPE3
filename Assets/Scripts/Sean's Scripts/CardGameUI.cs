@@ -709,9 +709,21 @@ public class CardGameUI : MonoBehaviour
                     }
                 }
 
+                ////apply possible rotation resistance
+                if (theEnemy.GetComponent<CharacterObject>().RotationResistanceCanApply(theSelectedElements))
+                {
+
+                    float theNumberCalc = theNumber;
+                    Debug.Log("Damage before: " + theNumber);
+                    Debug.Log("Per result: " + (theNumberCalc * ((float)theEnemy.GetComponent<CharacterObject>().lastAttackResistancePercentage / 100)));
+                    theNumberCalc = theNumberCalc - (theNumberCalc * ((float)theEnemy.GetComponent<CharacterObject>().lastAttackResistancePercentage / 100));
+
+                    theNumber = (int)theNumberCalc;
+                }
+                theEnemy.GetComponent<CharacterObject>().RotateResistance(uniqueElementCardList); //rotate rotation ressitance
                 theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber; //final damage reduce
-                stunValue += theEnemy.GetComponent<CharacterObject>().DetermineWeaknessStunt(theSelectedElements);
-                theEnemy.GetComponent<CharacterObject>().DealStun(stunValue);
+                stunValue += theEnemy.GetComponent<CharacterObject>().DetermineWeaknessStunt(theSelectedElements); //add stun
+                theEnemy.GetComponent<CharacterObject>().DealStun(stunValue); //deal with possible stun
 
                 if (theNumber > 0)
                 {

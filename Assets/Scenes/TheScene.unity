@@ -675,6 +675,7 @@ MonoBehaviour:
   stunThreshold: 0
   isStuned: 0
   turnsStunned: 0
+  lastAttackResistancePercentage: 0
 --- !u!1 &166043096
 GameObject:
   m_ObjectHideFlags: 0
@@ -2314,6 +2315,7 @@ MonoBehaviour:
   stunThreshold: 100
   isStuned: 0
   turnsStunned: 2
+  lastAttackResistancePercentage: 50
 --- !u!1 &487117378
 GameObject:
   m_ObjectHideFlags: 0

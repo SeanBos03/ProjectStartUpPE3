@@ -14,7 +14,10 @@ public class CharacterObject : MonoBehaviour
     public int stunThreshold; //threshold the stunBar can reach before character turns stunned
     [HideInInspector] public bool isStuned;
     public int turnsStunned; //amount of turns enemy is stunned
-    int turnsStunnedCurrentValue; 
+    int turnsStunnedCurrentValue;
+
+    [HideInInspector] List<string> rotationResistance = new List<string>();
+    public int lastAttackResistancePercentage;
 
     void Start()
     {
@@ -29,6 +32,18 @@ public class CharacterObject : MonoBehaviour
         {
             Debug.Log("Character weakness values not valid");
         }
+
+        if (lastAttackResistancePercentage < 0)
+        {
+            lastAttackResistancePercentage = 0;
+        }
+    }
+
+    public void RotateResistance(List<GameObject> theCards)
+    {
+        rotationResistance.Clear();
+        rotationResistance.Add(theCards[0].GetComponent<CardObjectImage>().theType);
+  //      Debug.Log("get element percentage: " + theCards[0].GetComponent<CardObjectImage>().theType);
     }
 
     public int DetermineResistance(List<string> theElements)
@@ -63,6 +78,27 @@ public class CharacterObject : MonoBehaviour
             }
         }
         return sumStuntSum;
+    }
+
+    public bool RotationResistanceCanApply(List<string> theElements)
+    {
+        //foreach (string element in rotationResistance)
+        //{
+        //    Debug.Log("Resistanet element per element: " + element);
+        //}
+
+        foreach (string element in theElements)
+        {
+            for (int i = 0; i < rotationResistance.Count; i++)
+            {
+                if (element == rotationResistance[i])
+                {
+                    Debug.Log("Deal percentage resistance: " + rotationResistance[i]);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void DealStun(int theValue)
