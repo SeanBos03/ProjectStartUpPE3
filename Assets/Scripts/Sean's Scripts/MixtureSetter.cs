@@ -9,17 +9,17 @@ public class MixtureSetter : MonoBehaviour
 
     void Start()
     {
+        if (GameData.startedMixtureSet)
+        {
+            return;
+        }
+
         foreach (string theElement in theElements)
         {
             GameData.elementList.Add(theElement);
         }
 
-        if (GameData.startedMixtureSetted)
-        {
-            return;
-        }
-
-        GameData.startedMixtureSetted = true;
+        GameData.startedMixtureSet = true;
 
         foreach (GameData.Mixture mixture in mixtureListKnownAtStart)
         {
