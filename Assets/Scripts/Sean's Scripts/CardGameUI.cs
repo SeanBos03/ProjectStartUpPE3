@@ -40,6 +40,7 @@ public class CardGameUI : MonoBehaviour
     public Button confirmButton;
 
     [SerializeField] List<GameObject> theDeck = new List<GameObject>();
+    [SerializeField] List<GameObject> theDeckPositionRef = new List<GameObject>();
 
     [SerializeField] Slider enemyHealthSlider;
     [SerializeField] Slider playerHealthSlider;
@@ -47,10 +48,13 @@ public class CardGameUI : MonoBehaviour
 
     bool playerTurn = true;
     bool gameOver;
+    bool gameStart = false;
     int resultMana;
 
     public float damageDisplayTimeStart;
     public float damageDisplayTime;
+
+    public float startTime = 0.001f;
 
     Animator enemyAnimator;
     Coroutine enemyDisplayTimer;
@@ -72,6 +76,11 @@ public class CardGameUI : MonoBehaviour
 
         confirmButton.onClick.AddListener(ConfirmButtonOnClick);
         endTurnButton.onClick.AddListener(EndTurnButtonClick);
+
+        for (int i = 0; i < theDeckPositionRef.Count; i++)
+        {
+            theDeckPositionRef[i].SetActive(false);
+        }
 
         //generating the list
         foreach (GameObject theCardSetter in theCardSetterList)
@@ -105,7 +114,7 @@ public class CardGameUI : MonoBehaviour
     //at start, place cards at the deck
     private System.Collections.IEnumerator RandomizeDeckTimer()
     {
-        yield return new WaitForSeconds(0.001f);
+        yield return new WaitForSeconds(startTime);
 
         if (theCardList.Count < theDeck.Count)
         {
@@ -115,20 +124,26 @@ public class CardGameUI : MonoBehaviour
             yield break;
         }
 
-        foreach (GameObject theCard in theDeck)
+        for (int i = 0; i < theDeck.Count; i++)
         {
             int randomIndex = UnityEngine.Random.Range(0, theCardList.Count);
             GameObject randomCard = theCardList[randomIndex];
             theCardList.RemoveAt(randomIndex);
-            theCard.GetComponent<CardObjectImage>().ChangeCard(randomCard.GetComponent<CardObjectImage>());
+            theDeck[i].GetComponent<CardObjectImage>().ChangeCard(randomCard.GetComponent<CardObjectImage>());
+            theDeck[i].GetComponent<TweenStuff>().MoveTo(theDeckPositionRef[i].transform);
         }
 
+        gameStart = true;
         cardAmountDisplay.text = "Card amount: " + theCardList.Count.ToString();
 
     }
 
     void Update()
     {
+        if (!gameStart)
+        {
+            return;
+        }
 
         if (gameOver)
         {
@@ -551,6 +566,11 @@ public class CardGameUI : MonoBehaviour
 
     void ConfirmButtonOnClick()
     {
+        if (!gameStart)
+        {
+            return;
+        }    
+
         if (playerTurn && !gameOver)
         {
             if (enemyAnimator.GetInteger("animState") != 1)
