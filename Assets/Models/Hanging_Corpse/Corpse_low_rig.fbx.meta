@@ -3,7 +3,12 @@ guid: ada733318b14c6241874e83379c8184e
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: standardSurface1
+    second: {fileID: 2100000, guid: 04f9d0a200cb37d4b9f484d3583a5143, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -24,7 +29,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -44,7 +49,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -60,7 +65,7 @@ ModelImporter:
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+      additiveReferencePoseFrame: 0.96
     isReadable: 0
   meshes:
     lODScreenPercentages: []
@@ -111,7 +116,72 @@ ModelImporter:
   humanDescription:
     serializedVersion: 3
     human: []
-    skeleton: []
+    skeleton:
+    - name: Corpse_low_rig(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Corpse_low
+      parentName: Corpse_low_rig(Clone)
+      position: {x: -0.006526422, y: 0.086502805, z: -0.0074884924}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 0.01, y: 0.01, z: 0.01}
+    - name: Rope_low
+      parentName: Corpse_low_rig(Clone)
+      position: {x: -0.0004812308, y: -0.32330436, z: -0.018286856}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 0.01, y: 0.01, z: 0.01}
+    - name: Belly
+      parentName: Corpse_low_rig(Clone)
+      position: {x: -0.0010361706, y: -0.058104064, z: -0.010969435}
+      rotation: {x: 0.05186316, y: -0.09328703, z: -0.7032855, w: 0.70284945}
+      scale: {x: 0.01, y: 0.01, z: 0.01}
+    - name: Chest
+      parentName: Belly
+      position: {x: -15.40133, y: 1.4536991e-15, z: -8.532918e-17}
+      rotation: {x: 1.6393238e-25, y: 0.14170547, z: -2.3616607e-17, w: 0.9899089}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Head
+      parentName: Chest
+      position: {x: -6.0103703, y: 2.2551405e-16, z: 2.1749096e-15}
+      rotation: {x: -0.07175123, y: 0.75090635, z: -0.08272873, w: 0.651266}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Jaw
+      parentName: Head
+      position: {x: -4.583739, y: -5.551115e-16, z: 6.2450045e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Shoulder_L
+      parentName: Chest
+      position: {x: -2.2529101, y: -6.596035, z: 1.3418267}
+      rotation: {x: -0.5903626, y: -0.43546107, z: 0.49325806, w: 0.46748498}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Elbow_L
+      parentName: Shoulder_L
+      position: {x: -11.447907, y: -0.14727636, z: -0.7322175}
+      rotation: {x: -0.015733717, y: -0.010340228, z: 0.015643774, w: 0.99970037}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Hand_L
+      parentName: Elbow_L
+      position: {x: -13.123942, y: 1.110223e-15, z: 3.9551695e-15}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Shoulder_R
+      parentName: Chest
+      position: {x: -2.2999475, y: 7.107587, z: -1.3573496}
+      rotation: {x: -0.53507304, y: 0.44874316, z: -0.56145674, w: 0.4439514}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Elbow_R
+      parentName: Shoulder_R
+      position: {x: -10.602321, y: 1.6114656e-15, z: -1.7339723e-15}
+      rotation: {x: 0.013981594, y: -0.023818295, z: 0.011215626, w: 0.99955565}
+      scale: {x: 1, y: 1, z: 1}
+    - name: hand_R
+      parentName: Elbow_R
+      position: {x: -13.123671, y: -5.551115e-16, z: 1.3183898e-15}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -120,9 +190,9 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 10
-    rootMotionBoneName: Belly
+    rootMotionBoneName: Corpse_low
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
