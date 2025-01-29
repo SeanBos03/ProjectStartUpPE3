@@ -40,6 +40,7 @@ public class CardGameUI : MonoBehaviour
     public Button confirmButton;
 
     [SerializeField] List<GameObject> theDeck = new List<GameObject>();
+    [SerializeField] List<GameObject> theDeckPositionRef = new List<GameObject>();
 
     [SerializeField] Slider enemyHealthSlider;
     [SerializeField] Slider playerHealthSlider;
@@ -47,10 +48,13 @@ public class CardGameUI : MonoBehaviour
 
     bool playerTurn = true;
     bool gameOver;
+    bool gameStart = false;
     int resultMana;
 
     public float damageDisplayTimeStart;
     public float damageDisplayTime;
+
+    public float startTime = 0.001f;
 
     Animator enemyAnimator;
     Coroutine enemyDisplayTimer;
@@ -72,6 +76,11 @@ public class CardGameUI : MonoBehaviour
 
         confirmButton.onClick.AddListener(ConfirmButtonOnClick);
         endTurnButton.onClick.AddListener(EndTurnButtonClick);
+
+        for (int i = 0; i < theDeckPositionRef.Count; i++)
+        {
+            theDeckPositionRef[i].SetActive(false);
+        }
 
         //generating the list
         foreach (GameObject theCardSetter in theCardSetterList)
@@ -105,7 +114,7 @@ public class CardGameUI : MonoBehaviour
     //at start, place cards at the deck
     private System.Collections.IEnumerator RandomizeDeckTimer()
     {
-        yield return new WaitForSeconds(0.001f);
+        yield return new WaitForSeconds(startTime);
 
         if (theCardList.Count < theDeck.Count)
         {
@@ -115,20 +124,26 @@ public class CardGameUI : MonoBehaviour
             yield break;
         }
 
-        foreach (GameObject theCard in theDeck)
+        for (int i = 0; i < theDeck.Count; i++)
         {
             int randomIndex = UnityEngine.Random.Range(0, theCardList.Count);
             GameObject randomCard = theCardList[randomIndex];
             theCardList.RemoveAt(randomIndex);
-            theCard.GetComponent<CardObjectImage>().ChangeCard(randomCard.GetComponent<CardObjectImage>());
+            theDeck[i].GetComponent<CardObjectImage>().ChangeCard(randomCard.GetComponent<CardObjectImage>());
+            theDeck[i].GetComponent<TweenStuff>().MoveTo(theDeckPositionRef[i].transform);
         }
 
+        gameStart = true;
         cardAmountDisplay.text = "Card amount: " + theCardList.Count.ToString();
 
     }
 
     void Update()
     {
+        if (!gameStart)
+        {
+            return;
+        }
 
         if (gameOver)
         {
@@ -149,7 +164,6 @@ public class CardGameUI : MonoBehaviour
                         {
                             if (theDeckCard.CompareTag("Card"))
                             {
-                                Debug.Log("Card click");
                                 //click marked card to unselected
                                 if (theDeckCard.GetComponent<CardObjectImage>().isMarked == true)
                                 {
@@ -174,6 +188,8 @@ public class CardGameUI : MonoBehaviour
                                     {
                                         if (theDeckCard.gameObject == theCard)
                                         {
+                                            cardSelectList.Remove(theCard);
+                                            cardDelteList.Remove(theCard);
                                             resultMana -= theCard.gameObject.GetComponent<CardObjectImage>().manaDiscardValue;
                                             CheckAndDisplayResultMana();
                                             theCard.GetComponent<CardObjectImage>().isToBeDeleted = false;
@@ -218,7 +234,7 @@ public class CardGameUI : MonoBehaviour
         //enemy's turn
         else
         {
-            enemyAnimator.SetInteger("animState", 3);
+            Debug.Log("StunBar: " + theEnemy.GetComponent<CharacterObject>().stunBar);
             int amountCardMissing = 0;
             foreach (GameObject theCard in theDeck)
             {
@@ -235,28 +251,37 @@ public class CardGameUI : MonoBehaviour
                 }
             }
 
-
-            int theNumber;
-            theNumber = UnityEngine.Random.Range(2, 21);
-            thePlayer.GetComponent<CharacterObject>().theHealth -= theNumber;
-            UpdateHealthPlayer();
-            playerTurn = true;
-
-            enemyDamageDisplay.text = theNumber.ToString();
-            enemyDamageDisplay.gameObject.SetActive(true);
-            if (enemyDisplayTimer == null)
+            if (!theEnemy.GetComponent<CharacterObject>().isStuned)
             {
+                enemyAnimator.SetInteger("animState", 3);
+                int theNumber;
+                theNumber = UnityEngine.Random.Range(2, 21);
+                thePlayer.GetComponent<CharacterObject>().theHealth -= theNumber;
+                UpdateHealthPlayer();
 
-                enemyDisplayTimer = StartCoroutine(DisplayEnemyDamage());
+                enemyDamageDisplay.text = theNumber.ToString();
+                enemyDamageDisplay.gameObject.SetActive(true);
+
+                if (enemyDisplayTimer == null)
+                {
+
+                    enemyDisplayTimer = StartCoroutine(DisplayEnemyDamage());
+                }
+
+                else
+                {
+                    StopCoroutine(enemyDisplayTimer);
+                    enemyDisplayTimer = StartCoroutine(DisplayEnemyDamage());
+                }
+                Debug.Log("Enemy deals: " + theNumber);
             }
 
             else
             {
-                StopCoroutine(enemyDisplayTimer);
-                enemyDisplayTimer = StartCoroutine(DisplayEnemyDamage());
+            //    Debug.Log("Enemy stunned");
             }
 
-            Debug.Log("Enemy deals: " + theNumber);
+            theEnemy.GetComponent<CharacterObject>().TryCeaseStun();
 
             if (thePlayer.GetComponent<CharacterObject>().theHealth <= 0)
             {
@@ -283,7 +308,7 @@ public class CardGameUI : MonoBehaviour
             CheckAndDisplayMana(true);
             resultMana = mana;
             CheckAndDisplayResultMana();
-
+            playerTurn = true;
         }
     }
 
@@ -388,6 +413,17 @@ public class CardGameUI : MonoBehaviour
             UpdateCardStatus(theCard, true, true, true);
             cardDelteList.Remove(theCard);
         }
+
+        if (cardDelteList.Contains(theCard))
+        {
+            cardDelteList.Remove(theCard);
+        }
+
+        if (cardSelectList.Contains(theCard))
+        {
+            cardSelectList.Remove(theCard);
+        }
+
     }
 
     void RemoveCard(GameObject theCard)
@@ -530,6 +566,11 @@ public class CardGameUI : MonoBehaviour
 
     void ConfirmButtonOnClick()
     {
+        if (!gameStart)
+        {
+            return;
+        }    
+
         if (playerTurn && !gameOver)
         {
             if (enemyAnimator.GetInteger("animState") != 1)
@@ -537,10 +578,17 @@ public class CardGameUI : MonoBehaviour
                 return;
             }
 
-            int amountElement = 0;
+            foreach (GameObject theCard in cardDelteList)
+            {
+                theCard.GetComponent<CardObjectImage>().isToBeRefreshed = true;
+                theCard.transform.Find("cardMarkDelete").gameObject.SetActive(false);
+                RemoveCard(theCard);
+            }
 
+            int elementAmountAdd = 0;
             List<String> elementListCompare = new List<String>();
             List<GameObject> uniqueElementCardList = new List<GameObject>();
+            int stunValue = 0;
 
             //copy the values of elementList to elementListCompare. So modifying elementListCompare wont modify elementList
             foreach (String element in GameData.elementList)
@@ -550,30 +598,33 @@ public class CardGameUI : MonoBehaviour
 
             foreach (GameObject theCard in cardSelectList)
             {
+                if (theCard.GetComponent<CardObjectImage>().theType.Contains("Element_"))
+                {
+                    elementAmountAdd++;
+                }
+
                 foreach (String element in elementListCompare)
                 {
                     if (theCard.GetComponent<CardObjectImage>().theType == element)
                     {
-                        amountElement++;
                         elementListCompare.Remove(element);
                         uniqueElementCardList.Add(theCard);
                         break;
                     }
                 }
 
-                if (amountElement > 2)
+                if (uniqueElementCardList.Count > 2)
                 {
                     return;
                 }
             }
 
-            if (amountElement == 0)
+            if (uniqueElementCardList.Count == 0)
             {
                 if (cardDelteList.Count == 0)
                 {
                     return;
                 }
-
             }
 
             if (resultMana < 0)
@@ -591,9 +642,14 @@ public class CardGameUI : MonoBehaviour
             //if both cards are selected, start dealing damage and update the values
             else if (cardSelectList.Count >= 2)
             {
+                if (elementAmountAdd < 2)
+                {
+                    return;
+                }
+
                 int valueSum = 0;
                 int multiplierSum = 0;
-                int amountOfElements = 0; //amount of cards selected that are not multiplier card
+                List<string> theSelectedElements = new List<string>();
 
                 for (int i = 0; i < cardSelectList.Count; i++)
                 {
@@ -612,7 +668,7 @@ public class CardGameUI : MonoBehaviour
                         }
 
                         valueSum += cardSelectList[i].GetComponent<CardObjectImage>().theValue;
-                        amountOfElements++;
+                        theSelectedElements.Add(cardSelectList[i].GetComponent<CardObjectImage>().theType);
                     }
                 }
 
@@ -623,7 +679,8 @@ public class CardGameUI : MonoBehaviour
                 }
 
                 int theNumber = 0;
-                theNumber = valueSum * multiplierSum; //base damage 
+                theNumber = valueSum * multiplierSum; //base damage
+                theNumber -= theEnemy.GetComponent<CharacterObject>().DetermineResistance(theSelectedElements); //dealing with enemy resistance
 
                 //there will only be two unique element at most (uniqueElementCardList.count is either 2 or 1)
                 //so, checking if the two unique element combination matches one of the natural combos
@@ -645,7 +702,7 @@ public class CardGameUI : MonoBehaviour
 
                     if (foundCombo)
                     {
-                        theNumber += (amountOfElements * comboBonusValue); //natural combo calculation.  dealing bonus damage depends on the amount of element cards and the cobmo bonus multiplier set
+                        theNumber += (theSelectedElements.Count * comboBonusValue); //natural combo calculation.  dealing bonus damage depends on the amount of element cards and the cobmo bonus multiplier set
                     }
                 }
 
@@ -672,7 +729,21 @@ public class CardGameUI : MonoBehaviour
                     }
                 }
 
-                theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber;
+                ////apply possible rotation resistance
+                if (theEnemy.GetComponent<CharacterObject>().RotationResistanceCanApply(theSelectedElements))
+                {
+
+                    float theNumberCalc = theNumber;
+                    Debug.Log("Damage before: " + theNumber);
+                    Debug.Log("Per result: " + (theNumberCalc * ((float)theEnemy.GetComponent<CharacterObject>().lastAttackResistancePercentage / 100)));
+                    theNumberCalc = theNumberCalc - (theNumberCalc * ((float)theEnemy.GetComponent<CharacterObject>().lastAttackResistancePercentage / 100));
+
+                    theNumber = (int)theNumberCalc;
+                }
+                theEnemy.GetComponent<CharacterObject>().RotateResistance(uniqueElementCardList); //rotate rotation ressitance
+                theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber; //final damage reduce
+                stunValue += theEnemy.GetComponent<CharacterObject>().DetermineWeaknessStunt(theSelectedElements); //add stun
+                theEnemy.GetComponent<CharacterObject>().DealStun(stunValue); //deal with possible stun
 
                 if (theNumber > 0)
                 {
@@ -703,13 +774,6 @@ public class CardGameUI : MonoBehaviour
             //{
             //    resultMana = manaMaxValue;
             //}
-
-            foreach (GameObject theCard in cardDelteList)
-            {
-                theCard.GetComponent<CardObjectImage>().isToBeRefreshed = true;
-                theCard.transform.Find("cardMarkDelete").gameObject.SetActive(false);
-                RemoveCard(theCard);
-            }
             cardDelteList.Clear();
             CheckAndDisplayResultMana();
             mana = resultMana;

@@ -20,4 +20,10 @@ public class TweenStuff : MonoBehaviour
         originalPosition = transform.position;
         transform.DOMove(thePosition.position, theTime);
     }
+
+    public void MoveTo(Transform theTransform)
+    {
+        StopAllCoroutines();
+        transform.DOMove(theTransform.position, theTime);
+    }
 }
