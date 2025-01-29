@@ -2608,17 +2608,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   theMixtureScript: {fileID: 655022780}
-  button1: {fileID: 815077922}
-  button2: {fileID: 1261157721}
-  button1Mixture:
-    theElements:
+  buttons:
+  - {fileID: 815077922}
+  - {fileID: 1261157721}
+  mixtures:
+  - theElements:
     - Element_Water
     - Element_Ground
     - Element_Water
     value: 20
     doesHealing: 0
-  button2Mixture:
-    theElements:
+  - theElements:
     - Element_Fire
     - Element_Thunder
     - Element_Thunder

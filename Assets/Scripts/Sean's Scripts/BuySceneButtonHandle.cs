@@ -5,24 +5,23 @@ using UnityEngine.UI;
 
 public class BuySceneButtonHandle : MonoBehaviour
 {
-    public BuyMixtureScript theMixtureScript;
-    public Button button1;
-    public Button button2;
-    public GameData.Mixture button1Mixture;
-    public GameData.Mixture button2Mixture;
-
+    public BuyMixtureScript theMixtureScript;  // Reference to the script handling mixture purchases
+    public List<Button> buttons;              // List of buttons
+    public List<GameData.Mixture> mixtures;   // Matching list of mixtures
     void Start()
     {
-        button1.onClick.AddListener(ButtonClickButton1);
-        button2.onClick.AddListener(ButtonClickButton2);
-    }
+        // Ensure the lists have the same length to avoid mismatches
+        if (buttons.Count != mixtures.Count)
+        {
+            Debug.LogError("Buttons list and Mixtures list must have the same length!");
+            return;
+        }
 
-    void ButtonClickButton1()
-    {
-        theMixtureScript.BuyMixture(button1Mixture);
-    }
-    void ButtonClickButton2()
-    {
-        theMixtureScript.BuyMixture(button2Mixture);
+        // Loop through the buttons and add their corresponding listeners
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            int index = i;  // Capture the index to avoid closure issues
+            buttons[i].onClick.AddListener(() => theMixtureScript.BuyMixture(mixtures[index]));
+        }
     }
 }
