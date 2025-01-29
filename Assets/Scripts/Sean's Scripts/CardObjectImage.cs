@@ -17,6 +17,7 @@ public class CardObjectImage : MonoBehaviour
     public string theType;
     public int multiplierNumber; //an ability card applies mulitplier to element card increasing the value
     public bool doesHealing;
+    public bool isMoving;
 
     List<GameObject> cardSelectList = new List<GameObject>();
     void Start()

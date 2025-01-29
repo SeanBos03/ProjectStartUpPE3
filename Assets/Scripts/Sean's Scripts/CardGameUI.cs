@@ -130,6 +130,7 @@ public class CardGameUI : MonoBehaviour
             GameObject randomCard = theCardList[randomIndex];
             theCardList.RemoveAt(randomIndex);
             theDeck[i].GetComponent<CardObjectImage>().ChangeCard(randomCard.GetComponent<CardObjectImage>());
+            theDeck[i].GetComponent<CardObjectImage>().isMoving = false;
             theDeck[i].GetComponent<TweenStuff>().MoveTo(theDeckPositionRef[i].transform);
         }
 
@@ -202,6 +203,10 @@ public class CardGameUI : MonoBehaviour
                                 //select unmarked card
                                 else
                                 {
+                                    if (theDeckCard.GetComponent<CardObjectImage>().isMoving)
+                                    {
+                                        return;
+                                    }
                                     HandleCardClick(theDeckCard);
                                 }
 
@@ -223,6 +228,10 @@ public class CardGameUI : MonoBehaviour
                         {
                             if (theDeckCard.CompareTag("Card"))
                             {
+                                if (theDeckCard.GetComponent<CardObjectImage>().isMoving)
+                                {
+                                    return;
+                                }
                                 HandleCardDelete(theDeckCard);
                             }
                         }
@@ -246,6 +255,7 @@ public class CardGameUI : MonoBehaviour
 
                 if (theCard.gameObject.GetComponent<CardObjectImage>().isDeleted)
                 {
+                    theCard.GetComponent<CardObjectImage>().isMoving = false;
                     theCard.gameObject.GetComponent<TweenStuff>().StartMovingBack();
                     amountCardMissing++;
                 }
@@ -436,6 +446,7 @@ public class CardGameUI : MonoBehaviour
             UpdateCardStatus(theCard, false, false, false);
             //   theDeck[index].gameObject.SetActive(false);
             theCard.gameObject.GetComponent<CardObjectImage>().isDeleted = true;
+            theCard.GetComponent<CardObjectImage>().isMoving = true;
             theCard.gameObject.GetComponent<TweenStuff>().StartMoving();
         }
     }
