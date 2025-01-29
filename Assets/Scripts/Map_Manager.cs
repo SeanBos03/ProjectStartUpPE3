@@ -45,12 +45,14 @@ public class MapManager : MonoBehaviour
         foreach (Room room in lockedRoom) 
         {
             room.isLocked = true;   
+            room.ChangeLockedOpacity();
         }
         lockedRoom = new List<Room>();  
         foreach (Room room in activeRoom.connectedRooms)
         {
             lockedRoom.Add(room);
             room.isLocked = false;
+            room.ChangeLockedOpacity();
         }
     }
 
@@ -204,9 +206,5 @@ public class MapManager : MonoBehaviour
                 spriteRenderer.color = Color.black;
                 break;
         }
-    }
-    private void OnMouseOver()
-    {
-        
     }
 }

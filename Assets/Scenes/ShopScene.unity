@@ -1185,7 +1185,6 @@ MonoBehaviour:
   - theElements:
     - Element_Green
     - Element_Water
-    - Element_Water
     value: 20
     doesHealing: 0
   theElements:

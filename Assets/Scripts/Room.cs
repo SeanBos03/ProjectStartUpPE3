@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,15 +16,18 @@ public class Room : MonoBehaviour
     private Color originalColor;       // Stores the original color of the GameObject
     private Renderer objectRenderer;  // Renderer component of the GameObject
     private List<Room> emptyRooms = new List<Room>();
+    private Color colorStash;
 
     void Start()
     {
         DrawConnections();
         objectRenderer = GetComponent<Renderer>();
+        colorStash = GetComponent<MeshRenderer>().material.color;
         if (objectRenderer != null)
         {
             originalColor = objectRenderer.material.color;
         }
+        ChangeLockedOpacity();
     }
 
     void DrawConnections()
@@ -80,14 +84,17 @@ public class Room : MonoBehaviour
                 case RoomType.Battle:
                     SceneManager.LoadScene("TheScene");
                     isLocked = true;
+                    ChangeLockedOpacity();
                     break;
                 case RoomType.Shop:
                     SceneManager.LoadScene("ShopScene");
                     isLocked = true;
+                    ChangeLockedOpacity();
                     break;
                 case RoomType.Boss:
                     SceneManager.LoadScene("BossRoom");
                     isLocked = true;
+                    ChangeLockedOpacity();
                     break;
                 default:
                     Debug.LogError($"Room at position {position} has an invalid or unassigned RoomType!");
@@ -99,5 +106,10 @@ public class Room : MonoBehaviour
         {
             Debug.Log($"The Room {roomType} is locked");
         }
+    }
+
+    public void ChangeLockedOpacity()
+    {
+        GetComponent<MeshRenderer>().material.color = colorStash * (isLocked ? 0.4f : 1);
     }
 }
