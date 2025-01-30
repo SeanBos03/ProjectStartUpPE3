@@ -89,8 +89,12 @@ public class CardGameUI : MonoBehaviour
     public AudioClip audioClipWendigoHit; //Played after the spell is cast by the player and hits the wendigo 
     public AudioClip audioClipWendigoSwipe; // Played when the wendigo hits the player 
     public AudioClip audioClipAmb;
+
+    ScreenShake theScreenShake;
+    public float timeUniltShake = 0.5f;
     void Start()
     {
+        theScreenShake = theCamera.GetComponent<ScreenShake>();
         theAudioSourceAmb = theCameraAudioSourceAmb.GetComponent<AudioSource>();
      //   theAudioSource2ElementLoop1 = theAudioSource2ElementLoop1.GetComponent<AudioSource>();
      //   theAudioSource2ElementLoop2 = theAudioSource2ElementLoop2.GetComponent<AudioSource>();
@@ -347,6 +351,24 @@ public class CardGameUI : MonoBehaviour
                 theNumber = UnityEngine.Random.Range(2, 21);
                 thePlayer.GetComponent<CharacterObject>().theHealth -= theNumber;
                 UpdateHealthPlayer();
+
+                if (theNumber > 15)
+                {
+                    theScreenShake.screenShakeStrength = 3;
+                }
+
+                else if (theNumber > 10)
+                {
+                    theScreenShake.screenShakeStrength = 2;
+                }
+
+                else
+                {
+                    theScreenShake.screenShakeStrength = 1;
+                }
+
+                StopCoroutine(ScreenShaketimer());
+                StartCoroutine(ScreenShaketimer());
 
                 enemyDamageDisplay.text = theNumber.ToString();
                 enemyDamageDisplay.gameObject.SetActive(true);
@@ -1070,6 +1092,12 @@ public class CardGameUI : MonoBehaviour
                 resistanceDisplay.text = "Resistance: Water";
                 break;
         }
+    }
+
+    private IEnumerator ScreenShaketimer()
+    {
+        yield return new WaitForSeconds(timeUniltShake);
+        theScreenShake.screenShakeTest = true;
     }
 }
 
