@@ -3506,8 +3506,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Card amount:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 384ba031246d65342abc07e19680e7c4, type: 2}
+  m_sharedMaterial: {fileID: 4400490524392801934, guid: 384ba031246d65342abc07e19680e7c4,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -9393,7 +9394,7 @@ PrefabInstance:
     - target: {fileID: 481359627126366991, guid: 06665a1bcc8baa648b63ba1c4fd2f32e,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3601131376881408957, guid: 06665a1bcc8baa648b63ba1c4fd2f32e,
         type: 3}
@@ -9408,7 +9409,7 @@ PrefabInstance:
     - target: {fileID: 5094547996716545830, guid: 06665a1bcc8baa648b63ba1c4fd2f32e,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8412104955653209568, guid: 06665a1bcc8baa648b63ba1c4fd2f32e,
         type: 3}
@@ -24126,8 +24127,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Expected mana:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 384ba031246d65342abc07e19680e7c4, type: 2}
+  m_sharedMaterial: {fileID: 4400490524392801934, guid: 384ba031246d65342abc07e19680e7c4,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
