@@ -72,6 +72,12 @@ public class CardGameUI : MonoBehaviour
     AudioSource theAudioSource;
     public GameObject theCameraAudioSource2;
     AudioSource theAudioSource2;
+    public GameObject theCameraAudioSourceAmb;
+    AudioSource theAudioSourceAmb;
+    public GameObject theCameraAudioSourceElementLoop1;
+    AudioSource theAudioSource2ElementLoop1;
+    public GameObject theCameraAudioSourceElementLoop2;
+    AudioSource theAudioSource2ElementLoop2;
 
     public AudioClip audioClipFireSelect; //Played when a fire card is selected to be played 
     public AudioClip audioClipLightningSelect;
@@ -82,8 +88,15 @@ public class CardGameUI : MonoBehaviour
     public AudioClip audioClipWendigoDead; // Played when the wendigo runs out of HP 
     public AudioClip audioClipWendigoHit; //Played after the spell is cast by the player and hits the wendigo 
     public AudioClip audioClipWendigoSwipe; // Played when the wendigo hits the player 
+    public AudioClip audioClipAmb;
     void Start()
     {
+        theAudioSourceAmb = theCameraAudioSourceAmb.GetComponent<AudioSource>();
+     //   theAudioSource2ElementLoop1 = theAudioSource2ElementLoop1.GetComponent<AudioSource>();
+     //   theAudioSource2ElementLoop2 = theAudioSource2ElementLoop2.GetComponent<AudioSource>();
+        theAudioSourceAmb.clip = audioClipAmb;
+        theAudioSourceAmb.Play();
+
         theAudioSource = theCamera.GetComponent<AudioSource>();
         theAudioSource2 = theCameraAudioSource2.GetComponent<AudioSource>();
         theMagicObject.GetComponent<MagicAttackVisualizer>().element1Count = 0;
