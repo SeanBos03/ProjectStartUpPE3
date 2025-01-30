@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 848961859661568910}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.78536946, z: -0, w: 0.6190274}
+  m_LocalRotation: {x: 0, y: 0.78537095, z: 0, w: 0.61902547}
   m_LocalPosition: {x: -7.779, y: 1.35, z: 1.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -150,13 +150,152 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4140fc68cfd8b64aa67af0a3530956d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultNoiseSpeed: 0.15
-  screenShakeNoiseSpeedIncrease: 10
-  screenShakeReturnSpeed: 15
-  screenShakeReturnSpeedRotational: 4
-  maxPositionOffset: 0.12
-  maxRotationOffset: 3
-  moveSpeed: 4
-  positionOffset: 2
+  lerpSpeed: 5
+  cam: {fileID: 3429623211373605301}
+  wobbleSpeed: 0.2
+  wobbleAmount: 0.15
+  screenDefaultShakeIntensity: 1
+  angleOffset: 0.3
+  intensityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.0029069767
+      value: 0.00625
+      inSlope: 12.982236
+      outSlope: 12.982236
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.45073828
+    - serializedVersion: 3
+      time: 0.100283
+      value: 1.0058154
+      inSlope: -5.9862156
+      outSlope: -5.9862156
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.34790707
+    - serializedVersion: 3
+      time: 0.21310605
+      value: -0.89868224
+      inSlope: 6.320768
+      outSlope: 6.320768
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.6244826
+    - serializedVersion: 3
+      time: 0.30709797
+      value: 0.75476223
+      inSlope: -8.772085
+      outSlope: -8.772085
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.5606702
+    - serializedVersion: 3
+      time: 0.40677378
+      value: -0.65125453
+      inSlope: 8.9112215
+      outSlope: 8.9112215
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.48511255
+    - serializedVersion: 3
+      time: 0.5080552
+      value: 0.54764926
+      inSlope: -10.138444
+      outSlope: -10.138444
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.32468876
+    - serializedVersion: 3
+      time: 0.61306655
+      value: -0.3914671
+      inSlope: 6.8748145
+      outSlope: 6.8748145
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.4755054
+    - serializedVersion: 3
+      time: 0.6962407
+      value: 0.29482087
+      inSlope: -5.558119
+      outSlope: -5.558119
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.50827473
+    - serializedVersion: 3
+      time: 0.7991493
+      value: -0.19001544
+      inSlope: 6.192323
+      outSlope: 6.192323
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.41157892
+    - serializedVersion: 3
+      time: 0.90928
+      value: 0.08423045
+      inSlope: -0.56482023
+      outSlope: -0.56482023
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.86758393
+    - serializedVersion: 3
+      time: 0.997093
+      value: -0.00625
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  defaultFov: 60
+  addedFov: 4
+  fovCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.0016937256
+      value: 0
+      inSlope: 31.339571
+      outSlope: 31.339571
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.14045471
+    - serializedVersion: 3
+      time: 0.08101029
+      value: 1.0109296
+      inSlope: 0.20022392
+      outSlope: 0.20022392
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.116535336
+    - serializedVersion: 3
+      time: 1.0101318
+      value: -0.004383087
+      inSlope: 0.025475785
+      outSlope: 0.025475785
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.116467506
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   screenShakeTest: 0
   screenShakeStrength: 1
+  screenShakeTime: 0.6

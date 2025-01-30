@@ -5,36 +5,40 @@ using UnityEngine;
 public class ScreenShake : MonoBehaviour
 {
     public static ScreenShake activeScreenShake;
-    [Header("Shake settings")]
-    public float defaultNoiseSpeed;
-    public float screenShakeNoiseSpeedIncrease;
-    public float screenShakeReturnSpeed;
-    public float screenShakeReturnSpeedRotational;
-    public float maxPositionOffset;
-    public float maxRotationOffset;
-    public float moveSpeed;
-    public float positionOffset;
+    public float lerpSpeed;
+    public Camera cam;
+
+    [Header("Wobble settings")]
+    public float wobbleSpeed;
+    public float wobbleAmount;
+
+    private float activeOffset;
+
+    [Header("ScreenShake settings")]
+    public float screenDefaultShakeIntensity;
+    public float angleOffset;
+    public AnimationCurve intensityCurve;
+
+    private IEnumerator activeLoop;
+
+    [Header("Fov")]
+    public float defaultFov;
+    public float addedFov;
+    public AnimationCurve fovCurve;
+
+    private Vector3 screenShakeOffset;
+
     [Header("Debugging")]
     public bool screenShakeTest;
     public float screenShakeStrength;
+    public float screenShakeTime;
 
     private Vector3 defaultLocation;
-    private Quaternion defaultRotation;
-    private float activeNoiseStrength;
-    private float activeNoiseStrengthRotation;
-    private float seed;
-    private float activeOffset;
-    private float activeOffsetR;
 
     public void Start()
     {
         activeScreenShake = this;
-
         defaultLocation = transform.position;
-        defaultRotation = transform.rotation;
-
-        seed = Random.Range(0, 99999);
-        activeNoiseStrength = defaultNoiseSpeed;
     }
 
     public void Update()
@@ -43,37 +47,47 @@ public class ScreenShake : MonoBehaviour
         if(screenShakeTest)
         {
             screenShakeTest = false;
-            CallScreenShake(screenShakeStrength);
+            CallScreenShake(screenShakeStrength, screenShakeTime);
         }
     }
 
     public void Wobble()
     {
-        float positionOffsetX = (Mathf.PerlinNoise(seed + activeOffset, seed + activeOffset) - 0.5f) * 2f;
-        float positionOffsetY = (Mathf.PerlinNoise(seed - activeOffset, seed + activeOffset) - 0.5f) * 2f;
-        float rotationOffset = (Mathf.PerlinNoise(seed + activeOffsetR, seed - activeOffsetR) - 0.5f) * 2f;
+        float WobbleX = (Mathf.PerlinNoise(activeOffset, activeOffset) - 0.5f) * 2f * wobbleAmount;
+        float WobbleY = (Mathf.PerlinNoise(activeOffset, activeOffset) - 0.5f) * 2f * wobbleAmount;
 
-        positionOffsetX = Mathf.Clamp(positionOffsetX * (activeNoiseStrength / 2), -maxPositionOffset, maxPositionOffset);
-        positionOffsetY = Mathf.Clamp(positionOffsetY * (activeNoiseStrength / 2), -maxPositionOffset, maxPositionOffset);
-        rotationOffset = Mathf.Clamp(rotationOffset * activeNoiseStrengthRotation, -maxRotationOffset, maxRotationOffset);
+        Vector3 offset = transform.right * WobbleX + transform.up * WobbleY;
+        activeOffset += Time.deltaTime * wobbleSpeed;
 
-        Vector3 locationOffset = ((transform.up * positionOffsetY) + (transform.right * positionOffsetX)) * positionOffset;
-
-        transform.position = Vector3.Lerp(transform.position, defaultLocation + locationOffset, moveSpeed * Time.deltaTime);
-
-        activeOffset += Time.deltaTime * activeNoiseStrength;
-        activeOffsetR += Time.deltaTime * activeNoiseStrengthRotation;
-        activeNoiseStrength = Mathf.Lerp(activeNoiseStrength, defaultNoiseSpeed, screenShakeReturnSpeed * Time.deltaTime);
-        activeNoiseStrengthRotation = Mathf.Lerp(activeNoiseStrengthRotation, defaultNoiseSpeed, screenShakeReturnSpeedRotational * Time.deltaTime);
-
-        transform.rotation = defaultRotation;
-        transform.Rotate(Vector3.forward * rotationOffset);
+        transform.position = Vector3.Lerp(transform.position, defaultLocation + offset + screenShakeOffset, lerpSpeed * Time.deltaTime);
     }
 
-    public void CallScreenShake(float strength)
+    public void CallScreenShake(float strength, float time = 0.6f)
     {
-        activeNoiseStrength = strength * screenShakeNoiseSpeedIncrease;
-        activeNoiseStrengthRotation = strength * screenShakeNoiseSpeedIncrease;
+        if (activeLoop != null)
+            StopCoroutine(activeLoop);
+
+        activeLoop = ScreenShakeLoop(strength, time);
+        StartCoroutine(activeLoop);
+    }
+
+    public IEnumerator ScreenShakeLoop(float strength, float time)
+    {
+        Vector3 dir = (Vector3.down + Vector3.right * angleOffset).normalized;
+
+        float activeTime = 0;
+        while(activeTime <= time)
+        {
+            float checkAmount = 1f / time * activeTime;
+            screenShakeOffset = dir * intensityCurve.Evaluate(checkAmount) * strength * screenDefaultShakeIntensity;
+            cam.fieldOfView = Mathf.Lerp(defaultFov, defaultFov + addedFov, fovCurve.Evaluate(checkAmount) * strength);
+
+            activeTime += Time.deltaTime;
+            yield return null;
+        }
+        screenShakeOffset = Vector3.zero;
+        cam.fieldOfView = defaultFov;
+
     }
 
     /*public static IEnumerator CallScreenShake(float duration, Vector2 direction = new Vector2(), float intensityMultiply = 1f)
