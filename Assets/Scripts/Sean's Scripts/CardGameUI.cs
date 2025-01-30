@@ -400,6 +400,7 @@ public class CardGameUI : MonoBehaviour
                 Debug.Log("Enemy won");
                 DG.Tweening.DOTween.KillAll();
                 SceneManager.LoadScene("MainMenu");
+                Destroy(MapManager.instance.gameObject);
                 return;
             }
 
