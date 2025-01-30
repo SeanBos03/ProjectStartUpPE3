@@ -32,6 +32,7 @@ public class CardGameUI : MonoBehaviour
     [SerializeField] TMP_Text resultManaDisplay;
     [SerializeField] TMP_Text cardAmountDisplay;
     [SerializeField] TMP_Text enemyDamageDisplay;
+    [SerializeField] TMP_Text resistanceDisplay;
 
     [SerializeField] GameObject thePlayer;
     [SerializeField] GameObject theEnemy;
@@ -71,6 +72,12 @@ public class CardGameUI : MonoBehaviour
     AudioSource theAudioSource;
     public GameObject theCameraAudioSource2;
     AudioSource theAudioSource2;
+    public GameObject theCameraAudioSourceAmb;
+    AudioSource theAudioSourceAmb;
+    public GameObject theCameraAudioSourceElementLoop1;
+    AudioSource theAudioSource2ElementLoop1;
+    public GameObject theCameraAudioSourceElementLoop2;
+    AudioSource theAudioSource2ElementLoop2;
 
     public AudioClip audioClipFireSelect; //Played when a fire card is selected to be played 
     public AudioClip audioClipLightningSelect;
@@ -81,8 +88,19 @@ public class CardGameUI : MonoBehaviour
     public AudioClip audioClipWendigoDead; // Played when the wendigo runs out of HP 
     public AudioClip audioClipWendigoHit; //Played after the spell is cast by the player and hits the wendigo 
     public AudioClip audioClipWendigoSwipe; // Played when the wendigo hits the player 
+    public AudioClip audioClipAmb;
+
+    ScreenShake theScreenShake;
+    public float timeUniltShake = 0.5f;
     void Start()
     {
+        theScreenShake = theCamera.GetComponent<ScreenShake>();
+        theAudioSourceAmb = theCameraAudioSourceAmb.GetComponent<AudioSource>();
+     //   theAudioSource2ElementLoop1 = theAudioSource2ElementLoop1.GetComponent<AudioSource>();
+     //   theAudioSource2ElementLoop2 = theAudioSource2ElementLoop2.GetComponent<AudioSource>();
+        theAudioSourceAmb.clip = audioClipAmb;
+        theAudioSourceAmb.Play();
+
         theAudioSource = theCamera.GetComponent<AudioSource>();
         theAudioSource2 = theCameraAudioSource2.GetComponent<AudioSource>();
         theMagicObject.GetComponent<MagicAttackVisualizer>().element1Count = 0;
@@ -333,6 +351,24 @@ public class CardGameUI : MonoBehaviour
                 theNumber = UnityEngine.Random.Range(2, 21);
                 thePlayer.GetComponent<CharacterObject>().theHealth -= theNumber;
                 UpdateHealthPlayer();
+
+                if (theNumber > 15)
+                {
+                    theScreenShake.screenShakeStrength = 3;
+                }
+
+                else if (theNumber > 10)
+                {
+                    theScreenShake.screenShakeStrength = 2;
+                }
+
+                else
+                {
+                    theScreenShake.screenShakeStrength = 1;
+                }
+
+                StopCoroutine(ScreenShaketimer());
+                StartCoroutine(ScreenShaketimer());
 
                 enemyDamageDisplay.text = theNumber.ToString();
                 enemyDamageDisplay.gameObject.SetActive(true);
@@ -824,6 +860,8 @@ public class CardGameUI : MonoBehaviour
                     }
                 }
 
+                DisplayResistance(theSelectedElements[0]);
+
                 ////apply possible rotation resistance
                 if (theEnemy.GetComponent<CharacterObject>().RotationResistanceCanApply(theSelectedElements))
                 {
@@ -835,6 +873,7 @@ public class CardGameUI : MonoBehaviour
 
                     theNumber = (int)theNumberCalc;
                 }
+
                 theEnemy.GetComponent<CharacterObject>().RotateResistance(uniqueElementCardList); //rotate rotation ressitance
                 theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber; //final damage reduce
                 stunValue += theEnemy.GetComponent<CharacterObject>().DetermineWeaknessStunt(theSelectedElements); //add stun
@@ -1031,6 +1070,35 @@ public class CardGameUI : MonoBehaviour
                 theAudioSource.Play();
                 break;
         }
+    }
+
+    void DisplayResistance(String theElement)
+    {
+        //cardObject.gameObject.GetComponent<CardObjectImage>().theType
+        switch (theElement)
+        {
+            case "Element_Fire":
+                resistanceDisplay.text = "Resistance: Fire";
+                break;
+            case "Element_Thunder":
+                resistanceDisplay.text = "Resistance: Lightning";
+                break;
+            case "Element_Ground":
+                resistanceDisplay.text = "Resistance: Rock";
+                break;
+            case "Element_Green":
+                resistanceDisplay.text = "Resistance: Vine";
+                break;
+            case "Element_Water":
+                resistanceDisplay.text = "Resistance: Water";
+                break;
+        }
+    }
+
+    private IEnumerator ScreenShaketimer()
+    {
+        yield return new WaitForSeconds(timeUniltShake);
+        theScreenShake.screenShakeTest = true;
     }
 }
 
