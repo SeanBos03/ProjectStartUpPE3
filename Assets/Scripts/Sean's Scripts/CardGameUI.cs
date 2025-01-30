@@ -58,8 +58,17 @@ public class CardGameUI : MonoBehaviour
 
     Animator enemyAnimator;
     Coroutine enemyDisplayTimer;
+
+    public GameObject theMagicObject;
+    bool magicIsShooting;
+    public float magicAttackSpeed = 0.5f;
+
+    public Transform MagicAttackLocation;
     void Start()
     {
+        theMagicObject.GetComponent<MagicAttackVisualizer>().element1Count = 0;
+        theMagicObject.GetComponent<MagicAttackVisualizer>().element2Count = 0;
+
         enemyAnimator = theEnemy.GetComponent<Animator>();
         enemyAnimator.SetInteger("animState", 1);
         enemyDisplayTimer = StartCoroutine(DisplayEnemyDamage());
@@ -141,6 +150,31 @@ public class CardGameUI : MonoBehaviour
 
     void Update()
     {
+        if (magicIsShooting)
+        {
+
+            MagicAttackVisualizer magicAttackVisualizer = theMagicObject.GetComponent<MagicAttackVisualizer>();
+
+            if (magicAttackVisualizer.hitPreCooldown)
+            {
+                magicAttackVisualizer.hitPreCooldown = false;
+                enemyAnimator.SetInteger("animState", 2);
+            }
+
+            if (magicAttackVisualizer.element1Count == 0
+                && magicAttackVisualizer.element2Count == 0)
+            {
+                theMagicObject.gameObject.SetActive(false);
+                magicIsShooting = false;
+            }
+
+            else
+            {
+                return;
+            }
+        }
+
+
         if (!gameStart)
         {
             return;
@@ -180,6 +214,7 @@ public class CardGameUI : MonoBehaviour
                                             break;
                                         }
                                     }
+                                    UpdateMagic();
                                 }
 
                                 //click toBeDeleredCard card to unselect
@@ -198,6 +233,7 @@ public class CardGameUI : MonoBehaviour
                                             break;
                                         }
                                     }
+                                    UpdateMagic();
                                 }
 
                                 //select unmarked card
@@ -208,6 +244,7 @@ public class CardGameUI : MonoBehaviour
                                         return;
                                     }
                                     HandleCardClick(theDeckCard);
+                                    UpdateMagic();
                                 }
 
                             }
@@ -233,6 +270,7 @@ public class CardGameUI : MonoBehaviour
                                     return;
                                 }
                                 HandleCardDelete(theDeckCard);
+                                UpdateMagic();
                             }
                         }
                     }
@@ -577,6 +615,10 @@ public class CardGameUI : MonoBehaviour
 
     void ConfirmButtonOnClick()
     {
+        if (magicIsShooting)
+        {
+            return;
+        }
         if (!gameStart)
         {
             return;
@@ -758,7 +800,7 @@ public class CardGameUI : MonoBehaviour
 
                 if (theNumber > 0)
                 {
-                    enemyAnimator.SetInteger("animState", 2);
+                    UpdateMagic();
                 }
 
 
@@ -789,17 +831,130 @@ public class CardGameUI : MonoBehaviour
             CheckAndDisplayResultMana();
             mana = resultMana;
             CheckAndDisplayMana(false);
+            if (uniqueElementCardList.Count > 0)
+            {
+                ShootMagic();
+            }
+            
+
         }
     }
 
     void EndTurnButtonClick()
     {
+        if (magicIsShooting)
+        {
+            return;
+        }
+
         if (playerTurn && !gameOver)
         {
             if (enemyAnimator.GetInteger("animState") == 1)
             {
                 playerTurn = false;
             }
+        }
+    }
+
+    void ShootMagic()
+    {
+        magicIsShooting = true;
+        theMagicObject.SetActive(true);
+        MagicAttackVisualizer magicAttackVisualizer = theMagicObject.GetComponent<MagicAttackVisualizer>();
+        magicAttackVisualizer.moveSpeed = magicAttackSpeed;
+        magicAttackVisualizer.Shoot(MagicAttackLocation.position);
+    }
+
+    void UpdateMagic()
+    {
+        MagicAttackVisualizer magicAttackVisualizer = theMagicObject.GetComponent<MagicAttackVisualizer>();
+        int elementAmountAdd = 0;
+        List<String> elementListCompare = new List<String>();
+        List<GameObject> uniqueElementCardList = new List<GameObject>();
+        List<String> theSelectedElements = new List<String>();
+
+        //copy the values of elementList to elementListCompare. So modifying elementListCompare wont modify elementList
+        foreach (String element in GameData.elementList)
+        {
+            elementListCompare.Add((string)element.Clone());
+        }
+
+        foreach (GameObject theCard in cardSelectList)
+        {
+            theSelectedElements.Add(theCard.GetComponent<CardObjectImage>().theType);
+            if (theCard.GetComponent<CardObjectImage>().theType.Contains("Element_"))
+            {
+                elementAmountAdd++;
+            }
+
+            foreach (String element in elementListCompare)
+            {
+                if (theCard.GetComponent<CardObjectImage>().theType == element)
+                {
+                    elementListCompare.Remove(element);
+                    uniqueElementCardList.Add(theCard);
+                    break;
+                }
+            }
+        }
+
+        theMagicObject.gameObject.SetActive(false);
+        magicAttackVisualizer.element1Count = 0;
+        magicAttackVisualizer.element2Count = 0;
+
+        if (uniqueElementCardList.Count == 0)
+        {
+            return;
+        }
+
+        String element1 = uniqueElementCardList[0].GetComponent<CardObjectImage>().theType;
+        String element2 = "";
+        int amountElement1 = 0;
+        int amountElement2 = 0;
+
+
+        if (uniqueElementCardList.Count == 2)
+        {
+            element2 = uniqueElementCardList[1].GetComponent<CardObjectImage>().theType;
+        }
+
+        foreach (String theElement in theSelectedElements)
+        {
+            if (theElement == element1)
+            {
+                amountElement1++;
+                continue;
+            }
+
+            if (uniqueElementCardList.Count == 2)
+            {
+                if (theElement == element2)
+                {
+                    amountElement2++;
+                }
+            }
+        }
+
+        if (amountElement1 > 0 ||
+            amountElement2 > 0)
+        {
+            theMagicObject.gameObject.SetActive(true);
+        }
+
+        magicAttackVisualizer.SetElement(true, element1);
+        magicAttackVisualizer.element1Count = amountElement1;
+
+        
+
+        if (uniqueElementCardList.Count == 2)
+        {
+            magicAttackVisualizer.SetElement(false, element2);
+            magicAttackVisualizer.element2Count = amountElement2;
+        }
+
+        else
+        {
+            magicAttackVisualizer.element2Count = 0;
         }
     }
 }

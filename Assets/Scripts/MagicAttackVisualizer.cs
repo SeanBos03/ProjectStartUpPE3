@@ -1,7 +1,9 @@
+using Microsoft.Win32.SafeHandles;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.VFX;
@@ -26,12 +28,12 @@ public class MagicAttackVisualizer : MonoBehaviour
     public float multiplier;
 
     [Header("Visual Paramaters")]
-    [SerializeField]private float changeSpeed;
+    [SerializeField]public float changeSpeed;
     [SerializeField] private int externalMultiplier;
     [SerializeField] private int decreaselMultiplier;
 
     [Header("Shooting Paramaters")]
-    [SerializeField] private float moveSpeed;
+    [SerializeField] public float moveSpeed;
     [SerializeField] private float angleSpeed;
     [SerializeField] private float maxDegreeChange;
     [SerializeField] private AnimationCurve angleCurve;
@@ -39,17 +41,56 @@ public class MagicAttackVisualizer : MonoBehaviour
 
     [Header("Testing Paramater")]
     public Transform testLocation;
+
     public bool callToggle;
+
+    public float cooldownSeconds = 0.5f;
+    Vector3 originalPosition; //want it so the magic can shoot again so it needs to return the position it had before shooting
+    Quaternion originalRotation; //want it so the magic can shoot again so it needs to return the rotation it had beofre shooting
+    public bool hitPreCooldown;
+    public void Start()
+    {
+        originalPosition = transform.position;
+        originalRotation = transform.rotation;
+    }
 
     public void Update()
     {
         ChangeElements();
         Visualize();
+    }
 
-        if(callToggle)
+    public void SetElement(bool isElement1, string theElement)
+    {
+        ElementType theElementType = ElementType.Fire;
+
+        switch (theElement)
         {
-            callToggle = false;
-            Shoot(testLocation.position);
+            case "Element_Fire":
+                theElementType = ElementType.Fire;
+                break;
+            case "Element_Green":
+                theElementType = ElementType.Nature;
+                break;
+            case "Element_Ground":
+                theElementType = ElementType.Earth;
+                break;
+            case "Element_Thunder":
+                theElementType = ElementType.Electricity;
+                break;
+            case "Element_Water":
+                theElementType = ElementType.Water;
+                break;
+        }
+
+        if (isElement1)
+        {
+            element1 = theElementType;
+        }
+
+        else
+        {
+            element2 = theElementType;
         }
     }
 
@@ -139,6 +180,8 @@ public class MagicAttackVisualizer : MonoBehaviour
 
     public void Shoot(Vector3 location)
     {
+        transform.position = originalPosition;
+        transform.rotation = originalRotation;
         StartCoroutine(Shooting(location));
     }
 
@@ -162,8 +205,18 @@ public class MagicAttackVisualizer : MonoBehaviour
             yield return null;
         }
 
-        Destroy(gameObject);
+        hitPreCooldown = true;
+        StartCoroutine(Cooldown());
+    }
+
+    private IEnumerator Cooldown()
+    {
+        yield return new WaitForSeconds(cooldownSeconds);
+        hitPreCooldown = false;
+        element1Count = 0;
+        element2Count = 0;
         hitEvent.Invoke();
-        //Exploding part
+        transform.position = originalPosition;
+        transform.rotation = originalRotation;
     }
 }
