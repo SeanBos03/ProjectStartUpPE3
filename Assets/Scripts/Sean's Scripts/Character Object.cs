@@ -123,6 +123,16 @@ public class CharacterObject : MonoBehaviour
         }
     }
 
+    public void CheckStunAtAll()
+    {
+        if (turnsStunnedCurrentValue <= 0) //this should never be ture, but just in case
+        {
+            isStuned = false;
+            //      Debug.Log("Enemy got stunned 1");
+            return;
+        }
+    }
+
     //for x amount of turns (as long as turnsStunnedCurrentValue is greater than 0), enemy is stunned
     //this will decrease the amount of turns of the current value by 1 and see if it's over
     public void TryCeaseStun()

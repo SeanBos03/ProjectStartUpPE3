@@ -64,8 +64,27 @@ public class CardGameUI : MonoBehaviour
     public float magicAttackSpeed = 0.5f;
 
     public Transform MagicAttackLocation;
+
+
+
+    public GameObject theCamera;
+    AudioSource theAudioSource;
+    public GameObject theCameraAudioSource2;
+    AudioSource theAudioSource2;
+
+    public AudioClip audioClipFireSelect; //Played when a fire card is selected to be played 
+    public AudioClip audioClipLightningSelect;
+    public AudioClip audioClipRockSelect;
+    public AudioClip audioClipVineSelect;
+    public AudioClip audioClipWaterSelect;
+    public AudioClip audioClipCardSuffle; //Played whenever a card is shuffled into the player’s hand, played once for each card 
+    public AudioClip audioClipWendigoDead; // Played when the wendigo runs out of HP 
+    public AudioClip audioClipWendigoHit; //Played after the spell is cast by the player and hits the wendigo 
+    public AudioClip audioClipWendigoSwipe; // Played when the wendigo hits the player 
     void Start()
     {
+        theAudioSource = theCamera.GetComponent<AudioSource>();
+        theAudioSource2 = theCameraAudioSource2.GetComponent<AudioSource>();
         theMagicObject.GetComponent<MagicAttackVisualizer>().element1Count = 0;
         theMagicObject.GetComponent<MagicAttackVisualizer>().element2Count = 0;
 
@@ -128,6 +147,7 @@ public class CardGameUI : MonoBehaviour
         if (theCardList.Count < theDeck.Count)
         {
             Debug.Log("No card left!");
+            DG.Tweening.DOTween.KillAll();
             SceneManager.LoadScene("MainMenu");
             gameOver = true;
             yield break;
@@ -143,6 +163,8 @@ public class CardGameUI : MonoBehaviour
             theDeck[i].GetComponent<TweenStuff>().MoveTo(theDeckPositionRef[i].transform);
         }
 
+        theAudioSource.clip = audioClipCardSuffle;
+        theAudioSource.Play();
         gameStart = true;
         cardAmountDisplay.text = "Card amount: " + theCardList.Count.ToString();
 
@@ -159,6 +181,8 @@ public class CardGameUI : MonoBehaviour
             {
                 magicAttackVisualizer.hitPreCooldown = false;
                 enemyAnimator.SetInteger("animState", 2);
+                theAudioSource2.clip = audioClipWendigoHit;
+                theAudioSource2.Play();
             }
 
             if (magicAttackVisualizer.element1Count == 0
@@ -282,6 +306,7 @@ public class CardGameUI : MonoBehaviour
         else
         {
             Debug.Log("StunBar: " + theEnemy.GetComponent<CharacterObject>().stunBar);
+            theEnemy.GetComponent<CharacterObject>().CheckStunAtAll();
             int amountCardMissing = 0;
             foreach (GameObject theCard in theDeck)
             {
@@ -302,6 +327,8 @@ public class CardGameUI : MonoBehaviour
             if (!theEnemy.GetComponent<CharacterObject>().isStuned)
             {
                 enemyAnimator.SetInteger("animState", 3);
+                theAudioSource2.clip = audioClipWendigoSwipe;
+                theAudioSource2.Play();
                 int theNumber;
                 theNumber = UnityEngine.Random.Range(2, 21);
                 thePlayer.GetComponent<CharacterObject>().theHealth -= theNumber;
@@ -326,7 +353,7 @@ public class CardGameUI : MonoBehaviour
 
             else
             {
-            //    Debug.Log("Enemy stunned");
+                Debug.Log("Enemy stunned");
             }
 
             theEnemy.GetComponent<CharacterObject>().TryCeaseStun();
@@ -335,6 +362,7 @@ public class CardGameUI : MonoBehaviour
             {
                 gameOver = true;
                 Debug.Log("Enemy won");
+                DG.Tweening.DOTween.KillAll();
                 SceneManager.LoadScene("MainMenu");
                 return;
             }
@@ -342,6 +370,7 @@ public class CardGameUI : MonoBehaviour
             if (theCardList.Count < amountCardMissing)
             {
                 Debug.Log("No card left!");
+                DG.Tweening.DOTween.KillAll();
                 SceneManager.LoadScene("MainMenu");
                 gameOver = true;
                 return;
@@ -366,6 +395,8 @@ public class CardGameUI : MonoBehaviour
         {
             return;
         }
+
+        PlayCardsound(cardObject);
 
         bool cardRepeat = false;
         foreach (GameObject theCard in cardSelectList)
@@ -401,6 +432,8 @@ public class CardGameUI : MonoBehaviour
             return;
         }
 
+   //     PlayCardsound(cardObject);
+
         bool cardRepeat = false;
         foreach (GameObject theCard in cardDelteList)
         {
@@ -432,10 +465,12 @@ public class CardGameUI : MonoBehaviour
 
     void RandomizeDeck()
     {
+        bool playSuffleSound = false;
         foreach (GameObject theCard in theDeck)
         {
             if (theCard.GetComponent<CardObjectImage>().isToBeRefreshed)
             {
+                playSuffleSound = true;
                 theCard.GetComponent<CardObjectImage>().isToBeRefreshed = true;
                 // theCard.SetActive(true);
                 int randomIndex = UnityEngine.Random.Range(0, theCardList.Count);
@@ -443,6 +478,12 @@ public class CardGameUI : MonoBehaviour
                 theCardList.RemoveAt(randomIndex);
                 theCard.GetComponent<CardObjectImage>().ChangeCard(randomCard.GetComponent<CardObjectImage>());
             }
+        }
+
+        if (playSuffleSound)
+        {
+            theAudioSource.clip = audioClipCardSuffle;
+            theAudioSource.Play();
         }
 
         cardAmountDisplay.text = "Card amount: " + theCardList.Count.ToString();
@@ -796,6 +837,9 @@ public class CardGameUI : MonoBehaviour
                 theEnemy.GetComponent<CharacterObject>().RotateResistance(uniqueElementCardList); //rotate rotation ressitance
                 theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber; //final damage reduce
                 stunValue += theEnemy.GetComponent<CharacterObject>().DetermineWeaknessStunt(theSelectedElements); //add stun
+                theEnemy.GetComponent<CharacterObject>().CheckStunAtAll();
+
+
                 theEnemy.GetComponent<CharacterObject>().DealStun(stunValue); //deal with possible stun
 
                 if (theNumber > 0)
@@ -811,8 +855,11 @@ public class CardGameUI : MonoBehaviour
                 if (theEnemy.GetComponent<CharacterObject>().theHealth <= 0)
                 {
                     gameOver = true;
+                    DG.Tweening.DOTween.KillAll();
                     SceneManager.LoadScene("Chapter 1 Map");
                     Debug.Log("Player won");
+                    theAudioSource.clip = audioClipWendigoDead;
+                    theAudioSource.Play();
                 }
 
                 foreach (GameObject theCard in cardSelectList)
@@ -955,6 +1002,33 @@ public class CardGameUI : MonoBehaviour
         else
         {
             magicAttackVisualizer.element2Count = 0;
+        }
+    }
+
+    void PlayCardsound(GameObject cardObject)
+    {
+        switch (cardObject.gameObject.GetComponent<CardObjectImage>().theType)
+        {
+            case "Element_Fire":
+                theAudioSource.clip = audioClipFireSelect;
+                theAudioSource.Play();
+                break;
+            case "Element_Thunder":
+                theAudioSource.clip = audioClipLightningSelect;
+                theAudioSource.Play();
+                break;
+            case "Element_Ground":
+                theAudioSource.clip = audioClipRockSelect;
+                theAudioSource.Play();
+                break;
+            case "Element_Green":
+                theAudioSource.clip = audioClipVineSelect;
+                theAudioSource.Play();
+                break;
+            case "Element_Water":
+                theAudioSource.clip = audioClipWaterSelect;
+                theAudioSource.Play();
+                break;
         }
     }
 }
