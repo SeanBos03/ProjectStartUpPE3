@@ -97,6 +97,10 @@ public class CardGameUI : MonoBehaviour
 
     ScreenShake theScreenShake;
     public float timeUniltShake = 0.5f;
+
+    public float timerWalkAnim = 0.5f;
+    public float timerGetHitAnim = 0.5f;
+
     void Start()
     {
         
@@ -130,6 +134,8 @@ public class CardGameUI : MonoBehaviour
         UpdateHealthPlayer();
 
         UpdateHealthEnemy();
+
+        StartCoroutine(WalkShakeTimer());
 
         confirmButton.onClick.AddListener(ConfirmButtonOnClick);
         endTurnButton.onClick.AddListener(EndTurnButtonClick);
@@ -212,6 +218,8 @@ public class CardGameUI : MonoBehaviour
             {
                 magicAttackVisualizer.hitPreCooldown = false;
                 enemyAnimator.SetInteger("animState", 2);
+                StopCoroutine(GetHitShakeTimer());
+                StartCoroutine(GetHitShakeTimer());
                 theAudioSource2.clip = audioClipWendigoHit;
                 theAudioSource2.Play();
             }
@@ -1119,6 +1127,18 @@ public class CardGameUI : MonoBehaviour
     private IEnumerator ScreenShaketimer()
     {
         yield return new WaitForSeconds(timeUniltShake);
+        theScreenShake.screenShakeTest = true;
+    }
+
+    private IEnumerator WalkShakeTimer()
+    {
+        yield return new WaitForSeconds(timerWalkAnim);
+        theScreenShake.screenShakeTest = true;
+    }
+
+    private IEnumerator GetHitShakeTimer()
+    {
+        yield return new WaitForSeconds(timerGetHitAnim);
         theScreenShake.screenShakeTest = true;
     }
 }
