@@ -9057,7 +9057,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: ada733318b14c6241874e83379c8184e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.46
+      value: -1.136
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ada733318b14c6241874e83379c8184e,
         type: 3}
@@ -9067,7 +9067,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: ada733318b14c6241874e83379c8184e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.86
+      value: 4.281
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ada733318b14c6241874e83379c8184e,
         type: 3}
@@ -33185,7 +33185,7 @@ MonoBehaviour:
   enemyStunSlider: {fileID: 1015078259}
   damageDisplayTimeStart: 0
   damageDisplayTime: 1
-  startTime: 3
+  startTime: 11
   theMagicObject: {fileID: 2040946254}
   magicAttackSpeed: 2
   MagicAttackLocation: {fileID: 1891852793}
