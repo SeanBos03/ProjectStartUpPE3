@@ -33296,7 +33296,7 @@ MonoBehaviour:
   timeUniltShake: 1.2
   timerWalkAnim: 8.5
   timerGetHitAnim: 2.7
-  attakShakeTimer: 0
+  attakShakeTimer: 1
   gethitShakeTimer: 1.4
   walkShakeTimer: 2.4
 --- !u!1001 &1998913957
