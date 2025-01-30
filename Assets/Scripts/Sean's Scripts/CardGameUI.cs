@@ -99,6 +99,7 @@ public class CardGameUI : MonoBehaviour
     public float timeUniltShake = 0.5f;
     void Start()
     {
+        
         theScreenShake = theCamera.GetComponent<ScreenShake>();
         theAudioSourceAmb = theCameraAudioSourceAmb.GetComponent<AudioSource>();
      //   theAudioSource2ElementLoop1 = theAudioSource2ElementLoop1.GetComponent<AudioSource>();
@@ -116,7 +117,7 @@ public class CardGameUI : MonoBehaviour
         theMagicObject.GetComponent<MagicAttackVisualizer>().element2Count = 0;
 
         enemyAnimator = theEnemy.GetComponent<Animator>();
-        enemyAnimator.SetInteger("animState", 1);
+        enemyAnimator.SetInteger("animState", -1);
         enemyDisplayTimer = StartCoroutine(DisplayEnemyDamage());
         enemyHealthSlider.maxValue = theEnemy.GetComponent<CharacterObject>().maxHealth;
         playerHealthSlider.maxValue = thePlayer.GetComponent<CharacterObject>().maxHealth;
@@ -172,6 +173,8 @@ public class CardGameUI : MonoBehaviour
     {
         yield return new WaitForSeconds(startTime);
 
+        
+
         if (theCardList.Count < theDeck.Count)
         {
             Debug.Log("No card left!");
@@ -195,7 +198,7 @@ public class CardGameUI : MonoBehaviour
         theAudioSource.Play();
         gameStart = true;
         cardAmountDisplay.text = "Card amount: " + theCardList.Count.ToString();
-
+        enemyAnimator.SetInteger("animState", 1);
     }
 
     void Update()
