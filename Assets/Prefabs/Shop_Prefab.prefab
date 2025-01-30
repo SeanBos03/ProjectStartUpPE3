@@ -183,8 +183,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3301728702582822574}
   - component: {fileID: 1859958524326516717}
+  - component: {fileID: 6419106062284524989}
   m_Layer: 0
-  m_Name: shop
+  m_Name: child1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -257,3 +258,16 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6419106062284524989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5924105883686553230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5ce1dbafd1668a4a8e04c580286a8c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteChange: {fileID: 21300000, guid: 1119d85243873954dac5d32d2f03a8f5, type: 3}

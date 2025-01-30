@@ -23,7 +23,9 @@ public class Room : MonoBehaviour
     {
         DrawConnections();
         colorStash = spriteRenderer.color;
-        originalColor = spriteRenderer.color;
+        GameObject child1 = transform.Find("child1").gameObject;
+        SpriteRenderer childRenderer = child1.GetComponent<SpriteRenderer>();
+        originalColor = childRenderer.color;
         ChangeLockedOpacity();
     }
 
@@ -48,7 +50,11 @@ public class Room : MonoBehaviour
     {
         if (!isLocked)
         {
-            spriteRenderer.color = Color.green;
+            GameObject child1 = transform.Find("child1").gameObject;
+            //SpriteRenderer childRenderer = child1.GetComponent<SpriteRenderer>();
+            //childRenderer.color = Color.green;
+
+            child1.GetComponent<ImgChg>().ChangeSprite();
             Debug.Log ("GREEN");
         }
 
@@ -59,8 +65,11 @@ public class Room : MonoBehaviour
     {
         if (!isLocked)
         {
+            GameObject child1 = transform.Find("child1").gameObject;
+            //    SpriteRenderer childRenderer = child1.GetComponent<SpriteRenderer>();
+            //     childRenderer.color = originalColor;
 
-            spriteRenderer.color = originalColor;
+            child1.GetComponent<ImgChg>().ChangeOrginal();
             Debug.Log("NoHover");
         }
         return;
