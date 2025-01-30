@@ -32,6 +32,7 @@ public class CardGameUI : MonoBehaviour
     [SerializeField] TMP_Text resultManaDisplay;
     [SerializeField] TMP_Text cardAmountDisplay;
     [SerializeField] TMP_Text enemyDamageDisplay;
+    [SerializeField] TMP_Text resistanceDisplay;
 
     [SerializeField] GameObject thePlayer;
     [SerializeField] GameObject theEnemy;
@@ -823,6 +824,8 @@ public class CardGameUI : MonoBehaviour
                     }
                 }
 
+                DisplayResistance(theSelectedElements[0]);
+
                 ////apply possible rotation resistance
                 if (theEnemy.GetComponent<CharacterObject>().RotationResistanceCanApply(theSelectedElements))
                 {
@@ -834,6 +837,7 @@ public class CardGameUI : MonoBehaviour
 
                     theNumber = (int)theNumberCalc;
                 }
+
                 theEnemy.GetComponent<CharacterObject>().RotateResistance(uniqueElementCardList); //rotate rotation ressitance
                 theEnemy.GetComponent<CharacterObject>().theHealth -= theNumber; //final damage reduce
                 stunValue += theEnemy.GetComponent<CharacterObject>().DetermineWeaknessStunt(theSelectedElements); //add stun
@@ -1028,6 +1032,29 @@ public class CardGameUI : MonoBehaviour
             case "Element_Water":
                 theAudioSource.clip = audioClipWaterSelect;
                 theAudioSource.Play();
+                break;
+        }
+    }
+
+    void DisplayResistance(String theElement)
+    {
+        //cardObject.gameObject.GetComponent<CardObjectImage>().theType
+        switch (theElement)
+        {
+            case "Element_Fire":
+                resistanceDisplay.text = "Resistance: Fire";
+                break;
+            case "Element_Thunder":
+                resistanceDisplay.text = "Resistance: Lightning";
+                break;
+            case "Element_Ground":
+                resistanceDisplay.text = "Resistance: Rock";
+                break;
+            case "Element_Green":
+                resistanceDisplay.text = "Resistance: Vine";
+                break;
+            case "Element_Water":
+                resistanceDisplay.text = "Resistance: Water";
                 break;
         }
     }
