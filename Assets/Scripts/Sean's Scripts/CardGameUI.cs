@@ -10,9 +10,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
-using static UnityEditor.Rendering.FilterWindow;
+//using static UnityEditor.Rendering.FilterWindow;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
-using UnityEditor.Experimental.GraphView;
+//using UnityEditor.Experimental.GraphView;
 
 public class CardGameUI : MonoBehaviour
 {
@@ -1141,6 +1141,8 @@ public class CardGameUI : MonoBehaviour
     {
         yield return new WaitForSeconds(timerWalkAnim);
         theScreenShake.screenShakeTest = true;
+        theAudioSource2.clip = audioClipWendigoHit;
+        theAudioSource2.Play();
     }
 
     private IEnumerator GetHitShakeTimer()
