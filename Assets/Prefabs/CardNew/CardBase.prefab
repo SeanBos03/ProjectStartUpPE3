@@ -228,7 +228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef73e2f4cd6092747a23558d0b1ac29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manaDiscardValue: 2
+  manaDiscardValue: 1
   manaCost: 2
   isMarked: 0
   isToBeDeleted: 0
@@ -239,6 +239,7 @@ MonoBehaviour:
   theType: 
   multiplierNumber: 0
   doesHealing: 0
+  isMoving: 0
 --- !u!114 &7350304248357907192
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5970,7 +5970,7 @@ MonoBehaviour:
   stunThreshold: 100
   isStuned: 0
   turnsStunned: 1
-  lastAttackResistancePercentage: 100
+  lastAttackResistancePercentage: 25
 --- !u!4 &412623963 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7ed9a5c7f237f9b449d2dbf7b5367bf5,
@@ -19560,13 +19560,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5879233764028613690, guid: 4a2b21ed48a4b2743a104e8b9a87f96a,
         type: 3}
+      propertyPath: manaCost
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5879233764028613690, guid: 4a2b21ed48a4b2743a104e8b9a87f96a,
+        type: 3}
       propertyPath: theValue
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5879233764028613690, guid: 4a2b21ed48a4b2743a104e8b9a87f96a,
         type: 3}
       propertyPath: amountGenerate
-      value: 10
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5879233764028613690, guid: 4a2b21ed48a4b2743a104e8b9a87f96a,
+        type: 3}
+      propertyPath: manaDiscardValue
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5879233764028613690, guid: 4a2b21ed48a4b2743a104e8b9a87f96a,
         type: 3}
@@ -33023,7 +33033,7 @@ PrefabInstance:
     - target: {fileID: 5879233764028613690, guid: 4a2b21ed48a4b2743a104e8b9a87f96a,
         type: 3}
       propertyPath: amountGenerate
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5879233764028613690, guid: 4a2b21ed48a4b2743a104e8b9a87f96a,
         type: 3}
