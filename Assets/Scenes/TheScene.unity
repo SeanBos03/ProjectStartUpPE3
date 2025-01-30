@@ -33296,6 +33296,9 @@ MonoBehaviour:
   timeUniltShake: 1.2
   timerWalkAnim: 1
   timerGetHitAnim: 1
+  attakShakeTimer: 0.5
+  gethitShakeTimer: 0.5
+  walkShakeTimer: 2
 --- !u!1001 &1998913957
 PrefabInstance:
   m_ObjectHideFlags: 0

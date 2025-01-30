@@ -101,6 +101,10 @@ public class CardGameUI : MonoBehaviour
     public float timerWalkAnim = 0.5f;
     public float timerGetHitAnim = 0.5f;
 
+    public float attakShakeTimer;
+    public float gethitShakeTimer;
+    public float walkShakeTimer;
+
     void Start()
     {
         
@@ -135,6 +139,7 @@ public class CardGameUI : MonoBehaviour
 
         UpdateHealthEnemy();
 
+        theCamera.GetComponent<ScreenShake>().screenShakeTime = walkShakeTimer;
         StartCoroutine(WalkShakeTimer());
 
         confirmButton.onClick.AddListener(ConfirmButtonOnClick);
@@ -218,6 +223,7 @@ public class CardGameUI : MonoBehaviour
             {
                 magicAttackVisualizer.hitPreCooldown = false;
                 enemyAnimator.SetInteger("animState", 2);
+                theCamera.GetComponent<ScreenShake>().screenShakeTime = timerGetHitAnim;
                 StopCoroutine(GetHitShakeTimer());
                 StartCoroutine(GetHitShakeTimer());
                 theAudioSource2.clip = audioClipWendigoHit;
@@ -389,6 +395,7 @@ public class CardGameUI : MonoBehaviour
                     theScreenShake.screenShakeStrength = 1;
                 }
 
+                theCamera.GetComponent<ScreenShake>().screenShakeTime = attakShakeTimer;
                 StopCoroutine(ScreenShaketimer());
                 StartCoroutine(ScreenShaketimer());
 
