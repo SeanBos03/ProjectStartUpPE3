@@ -33294,8 +33294,8 @@ MonoBehaviour:
   audioClipAmb: {fileID: 8300000, guid: 85be076d69e6d5a4d9d15e79c4161e50, type: 3}
   audioClipMusic: {fileID: 8300000, guid: bcaba2e888a4af841aa9f18d27e2f60d, type: 3}
   timeUniltShake: 1.2
-  timerWalkAnim: 1
-  timerGetHitAnim: 1
+  timerWalkAnim: 8.5
+  timerGetHitAnim: 2.7
 --- !u!1001 &1998913957
 PrefabInstance:
   m_ObjectHideFlags: 0
