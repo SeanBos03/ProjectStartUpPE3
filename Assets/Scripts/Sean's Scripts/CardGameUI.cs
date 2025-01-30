@@ -32,6 +32,7 @@ public class CardGameUI : MonoBehaviour
     [SerializeField] TMP_Text resultManaDisplay;
     [SerializeField] TMP_Text cardAmountDisplay;
     [SerializeField] TMP_Text enemyDamageDisplay;
+    [SerializeField] TMP_Text enemyStunDisplay;
     [SerializeField] TMP_Text resistanceDisplay;
 
     [SerializeField] GameObject thePlayer;
@@ -46,6 +47,7 @@ public class CardGameUI : MonoBehaviour
     [SerializeField] Slider enemyHealthSlider;
     [SerializeField] Slider playerHealthSlider;
     [SerializeField] Slider playerManaSlider;
+    [SerializeField] Slider enemyStunSlider;
 
     bool playerTurn = true;
     bool gameOver;
@@ -111,6 +113,7 @@ public class CardGameUI : MonoBehaviour
         enemyDisplayTimer = StartCoroutine(DisplayEnemyDamage());
         enemyHealthSlider.maxValue = theEnemy.GetComponent<CharacterObject>().maxHealth;
         playerHealthSlider.maxValue = thePlayer.GetComponent<CharacterObject>().maxHealth;
+        enemyStunSlider.maxValue = theEnemy.GetComponent<CharacterObject>().stunThreshold;
         playerManaSlider.maxValue = manaMaxValue;
         resultMana = mana;
         UpdateManaPlayer();
@@ -324,6 +327,7 @@ public class CardGameUI : MonoBehaviour
         else
         {
             Debug.Log("StunBar: " + theEnemy.GetComponent<CharacterObject>().stunBar);
+            
             theEnemy.GetComponent<CharacterObject>().CheckStunAtAll();
             int amountCardMissing = 0;
             foreach (GameObject theCard in theDeck)
@@ -423,6 +427,7 @@ public class CardGameUI : MonoBehaviour
             resultMana = mana;
             CheckAndDisplayResultMana();
             playerTurn = true;
+            UpdateHealthEnemy();
         }
     }
 
@@ -655,7 +660,10 @@ public class CardGameUI : MonoBehaviour
     {
         enemyHealthDisplay.text = theEnemy.GetComponent<CharacterObject>().theHealth.ToString() + "/" +
             theEnemy.GetComponent<CharacterObject>().maxHealth.ToString();
+        enemyStunDisplay.text = theEnemy.GetComponent<CharacterObject>().stunBar.ToString() + "/" +
+            theEnemy.GetComponent<CharacterObject>().stunThreshold.ToString();
         enemyHealthSlider.value = theEnemy.GetComponent<CharacterObject>().theHealth;
+        enemyStunSlider.value = theEnemy.GetComponent<CharacterObject>().stunBar;
     }
 
     void UpdateHealthPlayer()

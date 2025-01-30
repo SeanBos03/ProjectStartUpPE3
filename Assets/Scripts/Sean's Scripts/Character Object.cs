@@ -148,12 +148,13 @@ public class CharacterObject : MonoBehaviour
 
         if (isStuned)
         {
-            stunBar = 0;
+           
             turnsStunnedCurrentValue--;
 
             if (turnsStunnedCurrentValue <= 0)
             {
-       //         Debug.Log("Enemy got stunned 2");
+                stunBar = 0;
+                //         Debug.Log("Enemy got stunned 2");
                 isStuned = false;
             }
         }
