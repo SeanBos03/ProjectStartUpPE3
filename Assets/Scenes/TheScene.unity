@@ -5971,7 +5971,7 @@ MonoBehaviour:
   stunThreshold: 100
   isStuned: 0
   turnsStunned: 1
-  lastAttackResistancePercentage: 100
+  lastAttackResistancePercentage: 25
 --- !u!4 &412623963 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7ed9a5c7f237f9b449d2dbf7b5367bf5,
@@ -9868,7 +9868,7 @@ PrefabInstance:
     - target: {fileID: 481359627126366991, guid: 06665a1bcc8baa648b63ba1c4fd2f32e,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3601131376881408957, guid: 06665a1bcc8baa648b63ba1c4fd2f32e,
         type: 3}
@@ -9888,7 +9888,7 @@ PrefabInstance:
     - target: {fileID: 5094547996716545830, guid: 06665a1bcc8baa648b63ba1c4fd2f32e,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8412104955653209568, guid: 06665a1bcc8baa648b63ba1c4fd2f32e,
         type: 3}
@@ -20115,13 +20115,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5879233764028613690, guid: 4a2b21ed48a4b2743a104e8b9a87f96a,
         type: 3}
+      propertyPath: manaCost
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5879233764028613690, guid: 4a2b21ed48a4b2743a104e8b9a87f96a,
+        type: 3}
       propertyPath: theValue
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5879233764028613690, guid: 4a2b21ed48a4b2743a104e8b9a87f96a,
         type: 3}
       propertyPath: amountGenerate
-      value: 10
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5879233764028613690, guid: 4a2b21ed48a4b2743a104e8b9a87f96a,
+        type: 3}
+      propertyPath: manaDiscardValue
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5879233764028613690, guid: 4a2b21ed48a4b2743a104e8b9a87f96a,
         type: 3}
@@ -33175,7 +33185,7 @@ MonoBehaviour:
   enemyStunSlider: {fileID: 1015078259}
   damageDisplayTimeStart: 0
   damageDisplayTime: 1
-  startTime: 0.3
+  startTime: 3
   theMagicObject: {fileID: 2040946254}
   magicAttackSpeed: 2
   MagicAttackLocation: {fileID: 1891852793}
@@ -33844,7 +33854,7 @@ PrefabInstance:
     - target: {fileID: 5879233764028613690, guid: 4a2b21ed48a4b2743a104e8b9a87f96a,
         type: 3}
       propertyPath: amountGenerate
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5879233764028613690, guid: 4a2b21ed48a4b2743a104e8b9a87f96a,
         type: 3}

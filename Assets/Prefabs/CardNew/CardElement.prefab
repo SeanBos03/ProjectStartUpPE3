@@ -8,10 +8,15 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7965231855090473798, guid: b37e64b72142dc04e9e0897b26d623d6,
+        type: 3}
+      propertyPath: manaDiscardValue
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2223835150095432703, guid: b37e64b72142dc04e9e0897b26d623d6,
         type: 3}
       propertyPath: m_Name
-      value: CardElement Variant
+      value: CardElement
       objectReference: {fileID: 0}
     - target: {fileID: 3701292961747162850, guid: b37e64b72142dc04e9e0897b26d623d6,
         type: 3}
