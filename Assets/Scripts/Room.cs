@@ -7,6 +7,7 @@ public class Room : MonoBehaviour
 {
     public enum RoomType { None, Battle, Shop, Boss }
     public RoomType roomType;
+    public SpriteRenderer spriteRenderer;
 
     [Header("Room Settings")]
     public Vector2 position; // Position in the map of each room to place them 
@@ -21,12 +22,8 @@ public class Room : MonoBehaviour
     void Start()
     {
         DrawConnections();
-        objectRenderer = GetComponent<Renderer>();
-        colorStash = GetComponent<MeshRenderer>().material.color;
-        if (objectRenderer != null)
-        {
-            originalColor = objectRenderer.material.color;
-        }
+        colorStash = spriteRenderer.color;
+        originalColor = spriteRenderer.color;
         ChangeLockedOpacity();
     }
 
@@ -50,8 +47,8 @@ public class Room : MonoBehaviour
     public void OnMouseEnter()
     {
         if (!isLocked)
-        { 
-            GetComponent<MeshRenderer>().material.color = Color.green;
+        {
+            spriteRenderer.color = Color.green;
             Debug.Log ("GREEN");
         }
 
@@ -63,7 +60,7 @@ public class Room : MonoBehaviour
         if (!isLocked)
         {
 
-            objectRenderer.material.color = originalColor;
+            spriteRenderer.color = originalColor;
             Debug.Log("NoHover");
         }
         return;
@@ -110,6 +107,6 @@ public class Room : MonoBehaviour
 
     public void ChangeLockedOpacity()
     {
-        GetComponent<MeshRenderer>().material.color = colorStash * (isLocked ? 0.4f : 1);
+        spriteRenderer.color = colorStash * (isLocked ? 0.4f : 1);
     }
 }

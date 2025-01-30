@@ -150,7 +150,7 @@ public class MapManager : MonoBehaviour
         roomScript.position = position;
 
         // Customize the room based on type
-        CustomizeRoom(roomObject, roomType);
+        //CustomizeRoom(roomObject, roomType);
 
         return roomScript;
     }
@@ -188,7 +188,7 @@ public class MapManager : MonoBehaviour
     }
 
 
-    void CustomizeRoom(GameObject room, Room.RoomType roomType)
+   /* void CustomizeRoom(GameObject room, Room.RoomType roomType)
     {
         // Customize room appearance based on room type
         var spriteRenderer = room.GetComponent<SpriteRenderer>();
@@ -203,8 +203,8 @@ public class MapManager : MonoBehaviour
                 spriteRenderer.color = Color.red;
                 break;
             case Room.RoomType.Battle:
-                spriteRenderer.color = Color.black;
+                spriteRenderer.color = Color.red;
                 break;
         }
-    }
+    }*/
 }
